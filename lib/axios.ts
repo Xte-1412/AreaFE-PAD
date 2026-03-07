@@ -1,8 +1,12 @@
 import Axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
+// Normalize baseURL: strip trailing /api and trailing / to prevent /api/api/... paths
+const rawBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/api\/?$/, '').replace(/\/$/, '');
+
 const axios = Axios.create({
   // Pastikan URL di Environment Variable Vercel (FE) sudah mengarah ke Koyeb
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  // Jangan tambahkan /api di akhir NEXT_PUBLIC_API_URL — normalisasi dilakukan otomatis di atas.
+  baseURL: rawBase,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
     'Accept': 'application/json',
