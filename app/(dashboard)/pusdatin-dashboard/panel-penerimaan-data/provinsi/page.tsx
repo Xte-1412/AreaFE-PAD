@@ -1,14 +1,59 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { FiFileText, FiAward, FiSearch, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiFileText, FiAward, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import type { IconType } from 'react-icons';
 import axios from '@/lib/axios';
 import PenerimaanTable, { SlhdData, IklhData } from '@/components/penerimaan/PenerimaanTable';
+import FilterSection from '@/components/shared/filters/FilterSection';
+import FilterSelect from '@/components/shared/filters/FilterSelect';
+import FilterAction from '@/components/shared/filters/FilterAction';
+import PaginationBar from '@/components/shared/pagination/PaginationBar';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
+interface ReviewDinas {
+  provinsi?: string;
+  kabupaten_kota?: string;
+  tipologi?: string;
+}
+
+interface SlhdReviewApiItem {
+  id?: number;
+  submission_id?: number;
+  dinas?: ReviewDinas;
+  buku_i?: string;
+  buku_ii?: string;
+  buku_iii?: string;
+  tabel_utama?: string;
+}
+
+interface IklhReviewApiItem {
+  id: number;
+  provinsi?: string;
+  jenis_dlh?: string;
+  tipologi?: string;
+  indeks_kualitas_air?: number;
+  indeks_kualitas_udara?: number;
+  indeks_kualitas_lahan?: number;
+  has_pesisir?: boolean | number | string;
+  indeks_kualitas_pesisir_laut?: number;
+  indeks_kualitas_kehati?: number;
+  total_iklh?: number;
+  status?: string;
+}
+
+type SlhdStatus = SlhdData['buku_1_status'];
+
+const normalizeSlhdStatus = (status: string | undefined): SlhdStatus => {
+  if (status === 'draft' || status === 'finalized' || status === 'approved' || status === 'rejected') {
+    return status;
+  }
+  return undefined;
+};
+
 // Tab Button Component
-function TabButton({ label, icon: Icon, active, onClick }: { label: string; icon: any; active: boolean; onClick: () => void }) {
+function TabButton({ label, icon: Icon, active, onClick }: { label: string; icon: IconType; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -33,8 +78,8 @@ export default function PenerimaanProvinsiPage() {
   
   // Filters
   const [filterTopologi, setFilterTopologi] = useState('');
-  const [filterYear, setFilterYear] = useState(CURRENT_YEAR);
-  const [search, setSearch] = useState('');
+  const [filterYear] = useState(CURRENT_YEAR);
+  const [search] = useState('');
   
   // Pagination
   const [page, setPage] = useState(1);
@@ -56,12 +101,12 @@ export default function PenerimaanProvinsiPage() {
 
       if (activeTab === 'SLHD') {
         const res = await axios.get(`/api/pusdatin/review/${filterYear}`, { params });
-        const data = res.data?.data || [];
+        const data: SlhdReviewApiItem[] = Array.isArray(res.data?.data) ? res.data.data : [];
         
         console.log('Raw API data:', data[0]); // Debug
         
-        setSlhdData(data.map((s: any) => ({
-          id: s.submission_id || s.id,
+        setSlhdData(data.map((s) => ({
+          id: Number(s.submission_id ?? s.id ?? 0),
           kabkota: s.dinas?.provinsi || s.dinas?.kabupaten_kota || '-',
           provinsi: s.dinas?.provinsi || '-',
           pembagian_daerah: 'Provinsi',
@@ -70,18 +115,18 @@ export default function PenerimaanProvinsiPage() {
           buku_2: (s.buku_ii && s.buku_ii !== 'Belum Upload') ? 'Buku II' : null,
           buku_3: (s.buku_iii && s.buku_iii !== 'Belum Upload') ? 'Buku III' : null,
           tabel_utama: (s.tabel_utama && s.tabel_utama !== 'Belum Upload') ? 'Tabel Utama' : null,
-          buku_1_status: s.buku_i,
-          buku_2_status: s.buku_ii,
-          buku_3_status: s.buku_iii,
+          buku_1_status: normalizeSlhdStatus(s.buku_i),
+          buku_2_status: normalizeSlhdStatus(s.buku_ii),
+          buku_3_status: normalizeSlhdStatus(s.buku_iii),
         })));
         
         setTotalPages(res.data?.last_page || 1);
         setTotal(res.data?.total || 0);
       } else {
         const res = await axios.get(`/api/pusdatin/review/iklh/${filterYear}`, { params });
-        const data = res.data?.data || [];
+        const data: IklhReviewApiItem[] = Array.isArray(res.data?.data) ? res.data.data : [];
         
-        setIklhData(data.map((s: any) => ({
+        setIklhData(data.map((s) => ({
           id: s.id,
           kabkota: s.provinsi || '-',
           provinsi: s.provinsi || '-',
@@ -145,29 +190,20 @@ export default function PenerimaanProvinsiPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-end">
-        {/* Topologi Wilayah */}
-        <div className="w-48">
-          <label className="block text-xs font-medium text-gray-500 mb-1">Topologi Wilayah</label>
-          <select
-            value={filterTopologi}
-            onChange={(e) => setFilterTopologi(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500"
-          >
-            <option value="">Pilih Topologi Wilayah</option>
-            <option value="daratan">Daratan</option>
-            <option value="pesisir">Pesisir</option>
-          </select>
-        </div>
+      <FilterSection>
+        <FilterSelect
+          label="Topologi Wilayah"
+          value={filterTopologi}
+          onChange={(e) => setFilterTopologi(e.target.value)}
+          options={[
+            { label: 'Pilih Topologi Wilayah', value: '' },
+            { label: 'Daratan', value: 'daratan' },
+            { label: 'Pesisir', value: 'pesisir' },
+          ]}
+        />
 
-        {/* Filter Button */}
-        <button
-          onClick={handleFilter}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-        >
-          Filter
-        </button>
-      </div>
+        <FilterAction onClick={handleFilter} />
+      </FilterSection>
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
@@ -199,35 +235,14 @@ export default function PenerimaanProvinsiPage() {
       />
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between bg-white px-6 py-4 rounded-xl border border-gray-200 shadow-sm">
-          <p className="text-sm text-gray-600">
-            Menampilkan <span className="font-semibold">{((page - 1) * 15) + 1}</span> - <span className="font-semibold">{Math.min(page * 15, total)}</span> dari <span className="font-semibold">{total}</span> data
-          </p>
-          
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FiChevronLeft />
-            </button>
-            
-            <span className="px-4 py-2 text-sm font-medium text-gray-700">
-              {page} / {totalPages}
-            </span>
-            
-            <button
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <FiChevronRight />
-            </button>
-          </div>
-        </div>
-      )}
+      <PaginationBar
+        page={page}
+        totalPages={totalPages}
+        totalItems={total}
+        onPageChange={setPage}
+        prevIcon={<FiChevronLeft />}
+        nextIcon={<FiChevronRight />}
+      />
     </div>
   );
 }
