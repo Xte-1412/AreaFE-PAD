@@ -41,7 +41,7 @@ Dokumen lain: [📑 Layout Docs](./dokumentasi/LayoutDocs.md)
 
 ## ⚙️ Persyaratan Sistem
 
-- Node.js `>= 20.x` (disarankan LTS terbaru)
+- Node.js `>= 20.19.0` (disarankan LTS terbaru; minimum dibutuhkan oleh lockfile saat ini)
 - pnpm `>= 9.x`
 - Backend SIPELITA aktif (Laravel API)
 
