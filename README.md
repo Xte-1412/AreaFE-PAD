@@ -1,7 +1,9 @@
 # SIPELITA (Sistem Informasi Penilaian Nirwasita Tantra)
 
-| [🏠 Home](./README.md) | [📈 Progress Project](./Progress%20PAD2.md) | [📑 Dokumentasi](./DOCS.md) |
-| :--- | :--- | :--- |
+| [🏠 Home](./README.md) | [📈 Progress Project](./dokumentasi/Progress%20PAD2.md) |
+| :--- | :--- |
+
+Dokumen lain: [📑 Layout Docs](./dokumentasi/LayoutDocs.md)
 
 ---
 

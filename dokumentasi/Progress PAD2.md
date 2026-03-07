@@ -1,7 +1,9 @@
 # SIPELITA (Sistem Informasi Penilaian Nirwasita Tantra)
 
-| [🏠 Home](./README.md) | [📈 Progress Project](./Progress%20PAD2.md) | [📑 Dokumentasi](./DOCS.md) |
-| :--- | :--- | :--- |
+| [🏠 Home](../README.md) | [📈 Progress Project](./Progress%20PAD2.md) |
+| :--- | :--- |
+
+Dokumen lain: [📑 Layout Docs](./LayoutDocs.md)
 
 ---
 
@@ -12,6 +14,7 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 ## 🗒️ Log Update
 
 - **07 Maret 2026** — Inisialisasi dokumen progress publik, Sprint 1 ditandai selesai, Sprint 2 ditetapkan sebagai sprint berikutnya.
+- **07 Maret 2026** — Dokumen dipindah ke folder `dokumentasi`.
 
 ---
 
