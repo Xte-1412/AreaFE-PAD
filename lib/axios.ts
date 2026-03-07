@@ -1,7 +1,9 @@
 import Axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
-// Normalize baseURL: strip trailing /api and trailing / to prevent /api/api/... paths
-const rawBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/api\/?$/, '').replace(/\/$/, '');
+// Normalize baseURL: trim, strip trailing slashes, then strip trailing /api to prevent /api/api/... paths
+const envBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').trim();
+const withoutTrailingSlashes = envBase.replace(/\/+$/, '');
+const rawBase = withoutTrailingSlashes.replace(/\/api$/, '');
 
 const axios = Axios.create({
   // Pastikan URL di Environment Variable Vercel (FE) sudah mengarah ke Koyeb
