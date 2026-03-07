@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import 'leaflet/dist/leaflet.css';
 import { AuthProvider } from "@/context/AuthContext";
+import ReactQueryProvider from "@/components/providers/ReactQueryProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -23,20 +24,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <AuthProvider>
-          <ErrorBoundary fallback={
-            <div className="w-full sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-2.5">
-              <div className="text-sm text-red-600">Navbar error - refresh halaman</div>
-            </div>
-          }>
-            <Header /> {/* <-- HEADER */}
-          </ErrorBoundary>
+        <ReactQueryProvider>
+          <AuthProvider>
+            <ErrorBoundary fallback={
+              <div className="w-full sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-2.5">
+                <div className="text-sm text-red-600">Navbar error - refresh halaman</div>
+              </div>
+            }>
+              <Header /> {/* <-- HEADER */}
+            </ErrorBoundary>
 
-          {/* Children (konten halaman) */}
-          {children}
+            {/* Children (konten halaman) */}
+            {children}
 
-          <Footer /> {/* <-- FOOTER */}
-        </AuthProvider>
+            <Footer /> {/* <-- FOOTER */}
+          </AuthProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

@@ -6,37 +6,17 @@ import Link from 'next/link';
 import SintaFullLogo from '@/components/SintaFullLogo';
 import { useAuth } from '@/context/AuthContext';
 import { isAxiosError } from 'axios';
-
-// --- KOMPONEN IKON MATA SANDI ---
-const EyeIcon = () => (
-  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-  </svg>
-);
-const EyeOffIcon = () => (
-  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.625-5.06A9.954 9.954 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.268 5.768M4 12s2.943-7 8-7 8 7 8 7-2.943 7-8 7-8-7-8-7z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-// --- AKHIR KOMPONEN IKON MATA SANDI ---
+import { parseApiErrorMessage } from '@/lib/zod-schemas';
+import AuthFormShell from '@/components/shared/auth/AuthFormShell';
+import PasswordField from '@/components/shared/auth/PasswordField';
 
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // State untuk mata sandi
   const [error, setError] = useState<string | null>(null);
 
   const { login } = useAuth();
-
-  // Tentukan ROLE ID secara statis
-  const ROLE_ID_ADMIN = '1'; 
-  const JENIS_ID_ADMIN = null;
-
-  // Hapus state [jenisId, setJenisId] dan [roleId, setRoleId]
-  // karena hanya untuk menghilangkan error yang sudah diselesaikan.
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,19 +25,10 @@ export default function AdminLoginPage() {
       await login({ 
         email, 
         password,
-        // role_id: ROLE_ID_ADMIN,
-        // jenis_dlh_id: JENIS_ID_ADMIN
       });
-      
-      console.log("API Login Response:", Response);
     } catch (err: unknown) {
       if (isAxiosError(err)) {
-        let message = 'Login gagal. Silakan coba lagi.';
-        if (err.response?.data?.errors?.email) {
-          message = err.response.data.errors.email[0];
-        } else if (err.response?.data?.message) {
-          message = err.response.data.message;
-        }
+        const message = parseApiErrorMessage(err.response?.data, 'Login gagal. Silakan coba lagi.');
         setError(message);
       } else {
         setError('Terjadi kesalahan yang tidak terduga.');
@@ -80,77 +51,52 @@ export default function AdminLoginPage() {
   );
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen py-12 px-4 space-y-8">
+    <AuthFormShell
+      title="Admin Login"
+      logo={<SintaFullLogo />}
+      errorMessage={error}
+      footer={renderRegisterSection()}
+      className="border-gray-300"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="email" className="block text-left text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Masukkan Email Admin"
+            required
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#00A86B] focus:border-[#00A86B] sm:text-sm"
+          />
+        </div>
 
-      <div className="flex justify-center">
-        <SintaFullLogo />
-      </div>
-
-      <div className="bg-white p-8 sm:p-10 rounded-xl shadow-xl w-full max-w-md text-center border border-gray-200">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Admin Login</h1>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span className="block sm:inline">{error}</span>
+        <div>
+          <PasswordField
+            label="Password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+          <div className="text-right mt-2 text-sm">
+            <Link href="/lupa-password" className="font-semibold text-[#00A86B] hover:underline">
+              Lupa password?
+            </Link>
           </div>
-        )}
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Field Email */}
-          <div>
-            <label htmlFor="email" className="block text-left text-sm font-medium text-gray-700">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="Masukkan Email Admin" 
-              required 
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#00A86B] focus:border-[#00A86B] sm:text-sm" 
-            />
-          </div>
-
-          {/* Field Password (DILENGKAPI) */}
-          <div>
-            <label htmlFor="password" className="block text-left text-sm font-medium text-gray-700">Password</label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A86B] focus:border-[#00A86B] sm:text-sm"
-              />
-              <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </div>
-            </div>
-            <div className="text-right mt-2 text-sm">
-              <Link href="/lupa-password" className="font-semibold text-[#00A86B] hover:underline">
-                Lupa password?
-              </Link>
-            </div>
-          </div>
-          {/* AKHIR FIELD PASSWORD */}
-
-          {/* Tombol Login */}
-          <div>
-            <button 
-              type="submit" 
-              className="w-full bg-[#00A86B] text-white font-bold py-3 px-4 rounded-lg hover:brightness-90 transition duration-300 shadow-sm"
-            >
-              Login Admin
-            </button>
-          </div>
-        </form>
-
-        {renderRegisterSection()}
-      </div>
-    </main>
+        <div>
+          <button
+            type="submit"
+            className="w-full bg-[#00A86B] text-white font-bold py-3 px-4 rounded-lg hover:brightness-90 transition duration-300 shadow-sm"
+          >
+            Login Admin
+          </button>
+        </div>
+      </form>
+    </AuthFormShell>
   );
 }

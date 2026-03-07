@@ -4,3 +4,5 @@ export type { ToastType } from './Toast';
 export { ConfirmModal } from './ConfirmModal';
 export type { ConfirmModalProps } from './ConfirmModal';
 export { FinalizedBadge } from './FinalizedBadge';
+export { AppModal } from './AppModal';
+export type { AppModalProps } from './AppModal';
