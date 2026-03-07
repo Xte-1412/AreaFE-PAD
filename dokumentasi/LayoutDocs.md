@@ -19,10 +19,10 @@ Gunakan struktur ini agar dokumen konsisten, mudah dicari, dan gampang dipahami 
 | Layout/HUB | `LayoutDocs.md` | ✅ Tersedia | Navigasi & standar dokumentasi |
 | Progress Public | `Progress PAD2.md` | ✅ Tersedia | Update progress per sprint |
 | Sprint Report (Single File) | `Sprint-Report.md` | ✅ Tersedia | Satu file untuk update berkala setiap sprint |
-| Tech Plan Template | `tamplate/TechPlan-Template.md` | ✅ Tersedia | Template rencana teknis |
-| Testing Template | `tamplate/Testing-Sprint-Template.md` | ✅ Tersedia | Template hasil testing sprint |
-| Sprint Report Template | `tamplate/Sprint-Report-Template.md` | ✅ Tersedia | Template laporan sprint publik |
-| Release Notes Template | `tamplate/Release-Notes-Template.md` | ✅ Tersedia | Template changelog rilis |
+| Tech Plan Template | `template/TechPlan-Template.md` | ✅ Tersedia | Template rencana teknis |
+| Testing Template | `template/Testing-Sprint-Template.md` | ✅ Tersedia | Template hasil testing sprint |
+| Sprint Report Template | `template/Sprint-Report-Template.md` | ✅ Tersedia | Template laporan sprint publik |
+| Release Notes Template | `template/Release-Notes-Template.md` | ✅ Tersedia | Template changelog rilis |
 
 ---
 
@@ -48,4 +48,4 @@ Gunakan struktur ini agar dokumen konsisten, mudah dicari, dan gampang dipahami 
 
 - **07 Maret 2026** — `DOCS.md` direstrukturisasi menjadi `LayoutDocs.md` dan seluruh dokumen dipindah ke folder `dokumentasi`.
 - **07 Maret 2026** — Ditambahkan `Sprint-Report.md` sebagai dokumen single-file untuk update tiap sprint.
-- **07 Maret 2026** — Seluruh file template dipindahkan ke folder `dokumentasi/tamplate`.
+- **07 Maret 2026** — Seluruh file template dipindahkan ke folder `dokumentasi/template` (typo tamplate → template diperbaiki).

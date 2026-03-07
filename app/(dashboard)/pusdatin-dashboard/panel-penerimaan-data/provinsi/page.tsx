@@ -78,8 +78,8 @@ export default function PenerimaanProvinsiPage() {
   
   // Filters
   const [filterTopologi, setFilterTopologi] = useState('');
-  const [filterYear] = useState(CURRENT_YEAR);
-  const [search] = useState('');
+  const filterYear = CURRENT_YEAR;
+  const search = '';
   
   // Pagination
   const [page, setPage] = useState(1);
@@ -102,8 +102,6 @@ export default function PenerimaanProvinsiPage() {
       if (activeTab === 'SLHD') {
         const res = await axios.get(`/api/pusdatin/review/${filterYear}`, { params });
         const data: SlhdReviewApiItem[] = Array.isArray(res.data?.data) ? res.data.data : [];
-        
-        console.log('Raw API data:', data[0]); // Debug
         
         setSlhdData(data.map((s) => ({
           id: Number(s.submission_id ?? s.id ?? 0),
