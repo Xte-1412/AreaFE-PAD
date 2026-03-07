@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import clsx from 'clsx';
 
 interface AppModalProps {
@@ -24,10 +24,11 @@ export function AppModal({
   panelClassName,
   closeOnBackdrop = true,
 }: AppModalProps) {
+  const titleId = useId();
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? 'app-modal-title' : undefined} aria-label={!title ? 'Dialog' : undefined}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby={title ? titleId : undefined} aria-label={!title ? 'Dialog' : undefined}>
       <div
         className="absolute inset-0 bg-black/50"
         onClick={closeOnBackdrop ? onClose : undefined}
@@ -52,7 +53,7 @@ export function AppModal({
         </button>
 
         <div className="p-6">
-          {title && <h3 id="app-modal-title" className="text-lg font-bold text-gray-900 pr-8">{title}</h3>}
+          {title && <h3 id={titleId} className="text-lg font-bold text-gray-900 pr-8">{title}</h3>}
           {children && <div className={clsx(title ? 'mt-2' : '')}>{children}</div>}
           {actions && <div className="mt-6">{actions}</div>}
         </div>
