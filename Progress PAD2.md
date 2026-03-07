@@ -1,3 +1,10 @@
+# SIPELITA (Sistem Informasi Penilaian Nirwasita Tantra)
+
+| [🏠 Home](./README.md) | [📈 Progress Project](./Progress%20PAD2.md) | [📑 Dokumentasi](./DOCS.md) |
+| :--- | :--- | :--- |
+
+---
+
 # Progress SIPELITA (Public)
 
 Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap selesai sprint.

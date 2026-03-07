@@ -1,4 +1,11 @@
-# SIPELITA (Sistem Informasi Penilaian Nirwasita Tantra) — Frontend
+# SIPELITA (Sistem Informasi Penilaian Nirwasita Tantra)
+
+| [🏠 Home](./README.md) | [📈 Progress Project](./Progress%20PAD2.md) | [📑 Dokumentasi](./DOCS.md) |
+| :--- | :--- | :--- |
+
+---
+
+## Frontend
 
 <div align="center">
 
