@@ -10,6 +10,7 @@ interface FilterActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export default function FilterAction({ label = 'Filter', className, ...rest }: FilterActionProps) {
   return (
     <button
+      type="button"
       className={clsx(
         'px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
         className
