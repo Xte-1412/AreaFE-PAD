@@ -187,7 +187,7 @@ export default function EditDeadlinePage() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <div className="flex space-x-2">
-                    <button onClick={handleEdit} className="text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed" disabled={isDeleting || true}>
+                    <button onClick={handleEdit} className="text-blue-500 hover:text-blue-700 disabled:opacity-30 disabled:cursor-not-allowed" disabled={isDeleting}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     </button>
                     <button onClick={() => handleDelete(deadline.id)} className="text-red-600 hover:text-red-900 disabled:opacity-30 disabled:cursor-not-allowed" disabled={isDeleting}>

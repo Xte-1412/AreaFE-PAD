@@ -106,16 +106,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem('auth_token');
     const cached = localStorage.getItem('user_data');
     
-    console.log('🔍 AUTH CONTEXT MOUNT CHECK:');
-    console.log('Token:', token ? 'EXISTS' : 'MISSING');
-    console.log('Cached user:', cached ? 'EXISTS' : 'MISSING');
-    
     // Kalau ada token & cached user, langsung load aja
     // Gak perlu fetch /api/user - token udah otomatis attach di setiap request
     if (token && cached) {
       try {
         const userData = JSON.parse(cached);
-        console.log('✅ Loaded user from cache:', userData.email, userData.role?.name);
         setUser(userData);
       } catch (e) {
         // Kalau gagal parse, clear cache rusak
@@ -123,8 +118,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('user_data');
         localStorage.removeItem('auth_token');
       }
-    } else {
-      console.log('⚠️ No token or cached user found');
     }
   }, []);
 
@@ -197,8 +190,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Redirect berdasarkan role
       const roleName = userData?.role?.name?.toLowerCase();
-      console.log('🔐 Login successful, role:', roleName);
-      console.log('📦 User data saved:', userData);
       
       if (roleName === 'admin') {
         router.push('/admin-dashboard');
@@ -207,7 +198,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else if (roleName === 'provinsi' || roleName === 'kabupaten/kota') {
         router.push('/dlh-dashboard');
       } else {
-        console.warn('⚠️ Unknown role:', roleName);
         router.push('/');
       }
     } catch (error: unknown) {

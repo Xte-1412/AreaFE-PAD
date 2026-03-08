@@ -20,15 +20,8 @@ export default function DashboardLayout({
       const token = localStorage.getItem('auth_token');
       const cachedUser = localStorage.getItem('user_data');
       
-      console.log('🔍 Dashboard Layout Auth Check:');
-      console.log('Token:', token ? 'EXISTS' : 'MISSING');
-      console.log('Cached user:', cachedUser ? 'EXISTS' : 'MISSING');
-      console.log('Context user:', user ? user.email : 'NULL');
-      console.log('Current path:', pathname);
-      
       // Tidak ada token = redirect ke login
       if (!token) {
-        console.log('❌ No token, redirecting to login...');
         router.push('/login');
         return;
       }
@@ -41,12 +34,8 @@ export default function DashboardLayout({
           roleName === 'pusdatin' ? '/pusdatin-dashboard' :
           (roleName === 'provinsi' || roleName === 'kabupaten/kota') ? '/dlh-dashboard' : null;
         
-        console.log('🔐 User role:', roleName);
-        console.log('📍 Correct dashboard:', correctDashboard);
-        
         // Jika user di dashboard yang salah, redirect ke yang benar
         if (correctDashboard && !pathname.startsWith(correctDashboard)) {
-          console.log('⚠️ Wrong dashboard! Redirecting to:', correctDashboard);
           router.push(correctDashboard);
           return;
         }

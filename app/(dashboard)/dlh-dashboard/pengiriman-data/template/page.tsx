@@ -74,10 +74,12 @@ const TemplateItem = ({ title, description, matraName, isFolder = false, isZip =
 
 export default function UnduhTemplatePage() {
     const [downloadingItem, setDownloadingItem] = useState<string | null>(null);
+    const [downloadError, setDownloadError] = useState<string | null>(null);
 
     const handleDownload = async (matraName?: string) => {
         const itemKey = matraName || 'all';
         setDownloadingItem(itemKey);
+        setDownloadError(null);
 
         try {
             let url = '/api/dinas/template/download-all-zip';
@@ -101,7 +103,7 @@ export default function UnduhTemplatePage() {
             window.URL.revokeObjectURL(downloadUrl);
         } catch (err: any) {
             console.error('Error downloading:', err);
-            alert(err.response?.data?.message || 'Gagal mengunduh file');
+            setDownloadError(err.response?.data?.message || 'Gagal mengunduh file');
         } finally {
             setDownloadingItem(null);
         }
@@ -123,6 +125,12 @@ export default function UnduhTemplatePage() {
 
     return (
         <div className="max-w-5xl mx-auto py-8 px-4">
+            {downloadError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+                    <p className="text-sm text-red-600">{downloadError}</p>
+                    <button onClick={() => setDownloadError(null)} className="text-red-400 hover:text-red-600 ml-3 text-lg leading-none">&times;</button>
+                </div>
+            )}
             {/* Breadcrumb */}
             <div className="text-sm text-green-600 mb-2 font-medium">
                 Panel Pengiriman Data <span className="text-gray-400 mx-2">&gt;</span> <span className="text-gray-600">Unduh Template Dokumen</span>

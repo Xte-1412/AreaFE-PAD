@@ -73,7 +73,11 @@ const UploadItem = ({ title, description, hideDownload = false, href = null, sta
                         Unggah / Lihat
                     </Link>
                 ) : (
-                    <button onClick={() => alert('Fungsi unggah belum dibuat')} className={buttonClasses}>
+                    <button
+                        disabled
+                        title="Fitur ini belum tersedia"
+                        className={`${buttonClasses} opacity-50 cursor-not-allowed`}
+                    >
                         <UploadIcon />
                         Unggah
                     </button>

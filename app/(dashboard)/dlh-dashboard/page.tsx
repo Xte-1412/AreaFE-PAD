@@ -369,7 +369,6 @@ export default function DLHDashboardPage() {
     useEffect(() => {
         if (user) {
             const role = user.role?.name?.toLowerCase();
-            console.log('🔍 DLH Dashboard role check:', role);
             
             // Redirect to correct dashboard based on role
             if (role === 'admin') {
@@ -420,7 +419,6 @@ export default function DLHDashboardPage() {
 
         const intervalId = setInterval(async () => {
             try {
-                console.log('🔄 Auto-refreshing dashboard data...');
                 const response = await axios.get('/api/dinas/dashboard');
                 setData(response.data);
                 setLastUpdated(new Date());
@@ -436,7 +434,6 @@ export default function DLHDashboardPage() {
     const handleRefresh = async () => {
         setIsRefreshing(true);
         try {
-            console.log('🔄 Manual refresh triggered...');
             const response = await axios.get('/api/dinas/dashboard');
             setData(response.data);
             setLastUpdated(new Date());
@@ -467,7 +464,7 @@ export default function DLHDashboardPage() {
                 <div className="text-center">
                     <p className="text-red-600 font-medium">{error}</p>
                     <button 
-                        onClick={() => window.location.reload()} 
+                        onClick={handleRefresh} 
                         className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
                         Coba Lagi
