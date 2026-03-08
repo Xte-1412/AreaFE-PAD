@@ -1,6 +1,6 @@
 // ⚠️ DEPRECATED — Sprint 2 (2026-03-08)
 // File ini sudah tidak aktif. Single AuthContext ada di: @/context/AuthContext.tsx
-// Arsip: _archive/s2-080326/AuthContext.contexts.tsx
+// Arsip: AreaPAD/_archive/s2-080326/AuthContext.contexts.tsx
 // Tidak ada komponen aktif yang mengimport dari folder ini.
 
 "use client";
