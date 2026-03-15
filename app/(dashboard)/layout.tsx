@@ -10,15 +10,19 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuth();
+  const { user, authReady } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
+    if (!authReady) {
+      setIsChecking(true);
+      return;
+    }
+
     const checkAuth = () => {
       const token = localStorage.getItem('auth_token');
-      const cachedUser = localStorage.getItem('user_data');
       
       // Tidak ada token = redirect ke login
       if (!token) {
@@ -44,19 +48,21 @@ export default function DashboardLayout({
       setIsChecking(false);
     };
     
-    // Delay sedikit untuk biarkan AuthContext hydrate
-    const timer = setTimeout(checkAuth, 100);
-    return () => clearTimeout(timer);
-  }, [user, router, pathname]);
+    checkAuth();
+  }, [user, authReady, router, pathname]);
 
-  // Loading state
+  // Loading state (skeleton)
   if (isChecking) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-gray-500">Memuat...</p>
+      <div className="p-8 space-y-6 min-h-screen">
+        <div className="h-8 w-72 bg-gray-200 rounded animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
         </div>
+        <div className="h-64 bg-gray-200 rounded-xl animate-pulse" />
+        <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
       </div>
     );
   }

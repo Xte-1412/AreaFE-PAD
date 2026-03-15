@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from '../lib/axios';
-import { isAxiosError } from 'axios';
 
 // --- TIPE DATA UTAMA ---
 interface Province { id: string; name: string; }
@@ -47,6 +46,7 @@ interface RegisterData {
 
 interface AuthContextType {
   user: User | null;
+  authReady: boolean;
   provinces: Province[];
   regencies: Regency[];
   jenisDlhs: JenisDlh[];
@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   
   // Start with null for both server and client (prevents hydration mismatch)
   const [user, setUser] = useState<User | null>(null);
@@ -112,13 +113,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const userData = JSON.parse(cached);
         setUser(userData);
-      } catch (e) {
-        // Kalau gagal parse, clear cache rusak
-        console.error('❌ Failed to parse cached user:', e);
+      } catch {
         localStorage.removeItem('user_data');
         localStorage.removeItem('auth_token');
       }
     }
+
+    setAuthReady(true);
   }, []);
 
   useEffect(() => {
@@ -138,7 +139,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
 
       } catch (error: unknown) {
-        console.error("Auth initialization error:", error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Auth initialization error:', error);
+        }
       } finally {
         setIsInitialized(true);
       }
@@ -185,8 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const userData = response.data.user;
       
       localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_data', JSON.stringify(userData));
-      setUser(userData);
+      updateUser(userData);
 
       // Redirect berdasarkan role
       const roleName = userData?.role?.name?.toLowerCase();
@@ -201,7 +203,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         router.push('/');
       }
     } catch (error: unknown) {
-      console.error("Login failed:", error);
       // Clear jika login gagal
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_data');
@@ -212,12 +213,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async (): Promise<void> => {
     try {
       await axios.post('/api/logout');
-    } catch (error: unknown) {
-      console.error("Logout error (ignoring):", error);
+    } catch {
     } finally {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_data');
       setUser(null);
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth:logout'));
+      }
+
       router.push('/login');
     }
   };
@@ -225,7 +230,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Tidak perlu blocking loading screen di sini - biarkan children render
   // Loading state akan dihandle oleh masing-masing komponen yang membutuhkan
   return (
-    <AuthContext.Provider value={{ user, provinces, regencies, jenisDlhs, login, register, logout }}> 
+    <AuthContext.Provider value={{ user, authReady, provinces, regencies, jenisDlhs, login, register, logout }}> 
       {children}
     </AuthContext.Provider>
   );

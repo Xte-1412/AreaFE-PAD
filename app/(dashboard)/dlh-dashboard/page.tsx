@@ -1,9 +1,10 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
+import { isAxiosError } from 'axios';
 
 const TAHAP_ORDER: Record<string, number> = {
   submission: 1,
@@ -357,37 +358,67 @@ function TahapanInfo({ tahapan }: { tahapan: DashboardData['tahapan'] }) {
 
 // --- MAIN PAGE ---
 export default function DLHDashboardPage() {
-    const { user } = useAuth();
+    const { user, authReady } = useAuth();
     const router = useRouter();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [resolvedRole, setResolvedRole] = useState<string | null>(null);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const stopAutoRefresh = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+
+    useEffect(() => {
+        if (!authReady) return;
+
+        if (user?.role?.name) {
+            setResolvedRole(user.role.name.toLowerCase());
+            return;
+        }
+
+        const cachedUser = localStorage.getItem('user_data');
+        if (!cachedUser) {
+            setResolvedRole(null);
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(cachedUser) as { role?: { name?: string } };
+            setResolvedRole(parsed.role?.name?.toLowerCase() ?? null);
+        } catch {
+            setResolvedRole(null);
+        }
+    }, [authReady, user]);
 
     // Check role and redirect if not DLH
     useEffect(() => {
-        if (user) {
-            const role = user.role?.name?.toLowerCase();
-            
-            // Redirect to correct dashboard based on role
-            if (role === 'admin') {
-                router.push('/admin-dashboard');
-                return;
-            } else if (role === 'pusdatin') {
-                router.push('/pusdatin-dashboard');
-                return;
-            }
-            // provinsi and kabupaten/kota are valid for DLH dashboard
+        if (!authReady || !resolvedRole) {
+            return;
         }
-    }, [user, router]);
+
+        if (resolvedRole === 'admin') {
+            router.push('/admin-dashboard');
+            return;
+        }
+
+        if (resolvedRole === 'pusdatin') {
+            router.push('/pusdatin-dashboard');
+            return;
+        }
+    }, [authReady, resolvedRole, router]);
 
     useEffect(() => {
         const fetchDashboard = async () => {
-            // Only fetch if user has correct role
-            const role = user?.role?.name?.toLowerCase();
-            if (role !== 'provinsi' && role !== 'kabupaten/kota') {
-                return; // Don't fetch, will redirect
+            if (resolvedRole !== 'provinsi' && resolvedRole !== 'kabupaten/kota') {
+                setLoading(false);
+                return;
             }
             
             try {
@@ -397,7 +428,10 @@ export default function DLHDashboardPage() {
                 setLastUpdated(new Date());
                 setError(null);
             } catch (err: unknown) {
-                console.error('Failed to fetch dashboard:', err);
+                if (isAxiosError(err) && err.response?.status === 401) {
+                    setError('Sesi login Anda berakhir. Silakan login ulang.');
+                    return;
+                }
                 const errorMessage = err instanceof Error ? err.message : 'Gagal memuat data dashboard';
                 setError(errorMessage);
             } finally {
@@ -405,30 +439,50 @@ export default function DLHDashboardPage() {
             }
         };
 
-        if (user) {
+        if (authReady) {
             fetchDashboard();
         }
-    }, [user]);
+    }, [authReady, resolvedRole]);
 
     // Auto-refresh setiap 30 detik
     useEffect(() => {
-        const role = user?.role?.name?.toLowerCase();
-        if (role !== 'provinsi' && role !== 'kabupaten/kota') {
+        stopAutoRefresh();
+
+        if (resolvedRole !== 'provinsi' && resolvedRole !== 'kabupaten/kota') {
             return;
         }
 
-        const intervalId = setInterval(async () => {
+        intervalRef.current = setInterval(async () => {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                stopAutoRefresh();
+                return;
+            }
+
             try {
                 const response = await axios.get('/api/dinas/dashboard');
                 setData(response.data);
                 setLastUpdated(new Date());
-            } catch (err) {
-                console.error('Auto-refresh failed:', err);
+            } catch (err: unknown) {
+                if (isAxiosError(err) && err.response?.status === 401) {
+                    stopAutoRefresh();
+                    return;
+                }
             }
         }, 30000); // 30 detik
 
-        return () => clearInterval(intervalId);
-    }, [user]);
+        return () => stopAutoRefresh();
+    }, [resolvedRole]);
+
+    useEffect(() => {
+        const onLogout = () => stopAutoRefresh();
+        window.addEventListener('auth:logout', onLogout);
+
+        return () => {
+            window.removeEventListener('auth:logout', onLogout);
+            stopAutoRefresh();
+        };
+    }, []);
 
     // Manual refresh
     const handleRefresh = async () => {
@@ -449,11 +503,22 @@ export default function DLHDashboardPage() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[500px]">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-gray-500">Memuat data dashboard...</p>
+            <div className="space-y-6 p-2">
+                <div className="flex justify-between items-start">
+                    <div className="space-y-2">
+                        <div className="h-8 w-72 bg-gray-200 rounded animate-pulse" />
+                        <div className="h-4 w-60 bg-gray-200 rounded animate-pulse" />
+                    </div>
+                    <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse" />
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
+                </div>
+                <div className="h-72 bg-gray-200 rounded-xl animate-pulse" />
+                <div className="h-72 bg-gray-200 rounded-xl animate-pulse" />
             </div>
         );
     }
