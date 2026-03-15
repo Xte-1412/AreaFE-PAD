@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import { isAxiosError } from 'axios';
+import DashboardSkeleton from '@/components/shared/loading/DashboardSkeleton';
 
 const TAHAP_ORDER: Record<string, number> = {
   submission: 1,
@@ -502,25 +503,7 @@ export default function DLHDashboardPage() {
     };
 
     if (loading) {
-        return (
-            <div className="space-y-6 p-2">
-                <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                        <div className="h-8 w-72 bg-gray-200 rounded animate-pulse" />
-                        <div className="h-4 w-60 bg-gray-200 rounded animate-pulse" />
-                    </div>
-                    <div className="h-10 w-28 bg-gray-200 rounded-lg animate-pulse" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-                    <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-                </div>
-                <div className="h-72 bg-gray-200 rounded-xl animate-pulse" />
-                <div className="h-72 bg-gray-200 rounded-xl animate-pulse" />
-            </div>
-        );
+        return <DashboardSkeleton variant="dlh" />;
     }
 
     if (error) {

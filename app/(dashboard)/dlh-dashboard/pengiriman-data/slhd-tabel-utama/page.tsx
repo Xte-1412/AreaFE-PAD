@@ -157,7 +157,6 @@ export default function SLHDTabelUtamaPage() {
                 });
             } catch {
                 // Endpoint belum ada, gunakan default
-                console.log('Tabel utama status endpoint not available');
             }
 
             // Map data ke format yang dibutuhkan

@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
+import DashboardSkeleton from '@/components/shared/loading/DashboardSkeleton';
 
 export default function DashboardLayout({
   children,
@@ -53,18 +54,7 @@ export default function DashboardLayout({
 
   // Loading state (skeleton)
   if (isChecking) {
-    return (
-      <div className="p-8 space-y-6 min-h-screen">
-        <div className="h-8 w-72 bg-gray-200 rounded animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-        </div>
-        <div className="h-64 bg-gray-200 rounded-xl animate-pulse" />
-        <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-      </div>
-    );
+    return <DashboardSkeleton variant="layout" />;
   }
 
   return (

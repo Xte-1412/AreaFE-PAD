@@ -8,6 +8,7 @@ import Link from 'next/link';
 import axios from '@/lib/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check, Clock, AlertCircle, Users, FileText, HardDrive, RefreshCw } from 'lucide-react';
+import DashboardSkeleton from '@/components/shared/loading/DashboardSkeleton';
 
 // --- TYPES ---
 interface TimelineItem {
@@ -566,16 +567,7 @@ export default function AdminDashboardPage() {
   };
 
   if (!user || loading) {
-    return (
-      <div className="p-8 space-y-8">
-        <h1 className="text-3xl font-extrabold text-gray-800">Dashboard Admin</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="h-32 bg-gray-100 animate-pulse rounded-xl"></div>
-          <div className="h-32 bg-gray-100 animate-pulse rounded-xl"></div>
-        </div>
-        <div className="h-40 bg-gray-100 animate-pulse rounded-xl"></div>
-      </div>
-    );
+    return <DashboardSkeleton variant="dlh" />;
   }
 
   if (!data) return null;

@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
 import axios from '@/lib/axios';
+import DashboardSkeleton from '@/components/shared/loading/DashboardSkeleton';
 
 interface DashboardData {
   summary: {
@@ -104,40 +105,7 @@ export default function PusdatinDashboardPage() {
 
   // Tampilkan UI Loading
   if (loading) {
-    return (
-      <div className="space-y-6 px-8 pb-10">
-        <header className="mb-2 space-y-2">
-          <div className="h-8 w-72 bg-gray-200 rounded animate-pulse" />
-        </header>
-
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-          <div className="h-28 bg-gray-200 rounded-xl animate-pulse" />
-        </section>
-
-        <section>
-          <div className="h-5 w-44 bg-gray-200 rounded animate-pulse mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-            <div className="h-40 bg-gray-200 rounded-xl animate-pulse" />
-          </div>
-        </section>
-
-        <section>
-          <div className="h-5 w-64 bg-gray-200 rounded animate-pulse mb-4" />
-          <div className="h-64 bg-gray-200 rounded-xl animate-pulse" />
-        </section>
-      </div>
-    );
+    return <DashboardSkeleton variant="pusdatin" />;
   }
 
   const data = dashboardData;

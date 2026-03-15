@@ -91,7 +91,6 @@ export default function UsersAktifPage() {
   const fetchWithCache = useCallback(async (endpoint: string, cacheKey: string) => {
     // Check cache first
     if (isCacheValid(cacheKey)) {
-      console.log(`Using cached data for ${cacheKey}`);
       return dataCache[cacheKey].data;
     }
 
