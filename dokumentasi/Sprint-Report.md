@@ -56,6 +56,8 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - Pattern native `alert/confirm/reload` pada flow prioritas dibersihkan.
 - Hardening auth pasca-sprint selesai (login hydration lebih stabil, polling logout DLH tidak memicu 401 lanjutan).
 - Loading dashboard diseragamkan memakai shared skeleton (`DashboardSkeleton`).
+- Admin Dashboard direfactor ke reusable components terpisah (`components/admin-dashboard/*`) + `barrel export`.
+- Tipe data Admin Dashboard dipusatkan ke shared types (`types/admin-dashboard.ts`) untuk menghapus duplikasi interface.
 
 ### 3) Dampak ke User
 - Login/dashboard lintas role lebih stabil tanpa refresh manual.
@@ -103,3 +105,4 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 ## Log Update
 - **07 Maret 2026** — Inisialisasi `Sprint-Report.md` sebagai single-file laporan sprint berkala, Sprint 1 diisi lengkap.
 - **15 Maret 2026** — Sprint 2 ditutup (100%), Sprint 3 diposisikan sebagai sprint aktif berikutnya.
+- **15 Maret 2026** — Pembaruan teknis Sprint 2: ekstraksi komponen reusable Admin Dashboard + konsolidasi shared types.

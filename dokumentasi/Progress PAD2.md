@@ -16,6 +16,7 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 - **07 Maret 2026** — Inisialisasi dokumen progress publik, Sprint 1 ditandai selesai, Sprint 2 ditetapkan sebagai sprint berikutnya.
 - **07 Maret 2026** — Dokumen dipindah ke folder `dokumentasi`.
 - **15 Maret 2026** — Sprint 2 ditandai selesai (100%), Sprint 3 ditetapkan sebagai sprint aktif berikutnya.
+- **15 Maret 2026** — Refactor Sprint 2: Admin Dashboard dimodularisasi ke reusable components + shared types terpusat.
 
 ---
 
@@ -63,6 +64,8 @@ Hasil utama Sprint 2:
 - AuthContext disatukan (single source of truth).
 - Pattern native `alert/confirm/reload` di area prioritas dibersihkan.
 - Hardening pasca-sprint dilakukan: login hydration lebih stabil, polling logout DLH aman, loading dashboard konsisten skeleton.
+- Komponen Admin Dashboard dipecah ke `components/admin-dashboard/*` untuk reusability dan maintainability.
+- Tipe data dashboard dipusatkan ke `types/admin-dashboard.ts` untuk konsistensi antarkomponen.
 
 Visual status Sprint 2:
 
