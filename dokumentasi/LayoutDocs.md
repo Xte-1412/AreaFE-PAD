@@ -49,3 +49,4 @@ Gunakan struktur ini agar dokumen konsisten, mudah dicari, dan gampang dipahami 
 - **07 Maret 2026** — `DOCS.md` direstrukturisasi menjadi `LayoutDocs.md` dan seluruh dokumen dipindah ke folder `dokumentasi`.
 - **07 Maret 2026** — Ditambahkan `Sprint-Report.md` sebagai dokumen single-file untuk update tiap sprint.
 - **07 Maret 2026** — Seluruh file template dipindahkan ke folder `dokumentasi/template` (typo tamplate → template diperbaiki).
+- **15 Maret 2026** — Dokumen publik `Sprint-Report.md` dan `Progress PAD2.md` diperbarui: Sprint 2 ditutup, Sprint 3 ditetapkan sebagai next.
