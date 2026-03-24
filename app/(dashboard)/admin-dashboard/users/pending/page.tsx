@@ -76,7 +76,6 @@ export default function UsersPendingPage() {
   // Helper: Fetch dengan cache
   const fetchWithCache = useCallback(async (endpoint: string, cacheKey: string) => {
     if (isCacheValid(cacheKey)) {
-      console.log(`Using cached data for ${cacheKey}`);
       return dataCache[cacheKey].data;
     }
 

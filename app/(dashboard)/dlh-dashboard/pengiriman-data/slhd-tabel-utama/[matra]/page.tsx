@@ -369,6 +369,7 @@ export default function MatraDetailPage() {
         isOpen: false, 
         tabel: null 
     });
+    const [downloadError, setDownloadError] = useState<string | null>(null);
 
     const matraName = ID_TO_MATRA_MAP[matraId] || matraId;
 
@@ -469,6 +470,14 @@ export default function MatraDetailPage() {
                 </div>
             </div>
 
+            {/* Download Error */}
+            {downloadError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+                    <p className="text-sm text-red-600">{downloadError}</p>
+                    <button onClick={() => setDownloadError(null)} className="text-red-400 hover:text-red-600 ml-3 text-lg leading-none">&times;</button>
+                </div>
+            )}
+
             {/* Table */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
@@ -514,7 +523,7 @@ export default function MatraDetailPage() {
                                             window.URL.revokeObjectURL(url);
                                         } catch (err: any) {
                                             console.error('Error downloading file:', err);
-                                            alert(err.response?.data?.message || 'Gagal mengunduh file');
+                                            setDownloadError(err.response?.data?.message || 'Gagal mengunduh file');
                                         }
                                     }}
                                     onDownloadTemplate={async (t) => {
@@ -533,7 +542,7 @@ export default function MatraDetailPage() {
                                             window.URL.revokeObjectURL(url);
                                         } catch (err: any) {
                                             console.error('Error downloading template:', err);
-                                            alert(err.response?.data?.message || 'Gagal mengunduh template');
+                                            setDownloadError(err.response?.data?.message || 'Gagal mengunduh template');
                                         }
                                     }}
                                 />

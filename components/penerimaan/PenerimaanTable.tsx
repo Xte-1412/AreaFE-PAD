@@ -94,7 +94,6 @@ export default function PenerimaanTable({
 
   // Handler untuk membuka modal dokumen
   const handleViewDocument = (item: SlhdData, documentType: 'buku1' | 'buku2' | 'buku3') => {
-    console.log('View document:', documentType, item.kabkota, 'submission_id:', item.id);
     setPreviewModal({
       isOpen: true,
       submissionId: item.id,
@@ -113,7 +112,6 @@ export default function PenerimaanTable({
 
   // Handler untuk approve dokumen dari modal
   const handleApproveDocument = async (submissionId: number, documentType: string, catatan?: string) => {
-    console.log('Approve document:', submissionId, documentType, catatan);
     try {
       await axios.post(`/api/pusdatin/review/submission/${submissionId}/${documentType}`, {
         status: 'approved',
@@ -128,7 +126,6 @@ export default function PenerimaanTable({
   };
 
   const handleRejectDocument = async (submissionId: number, documentType: string, catatan: string) => {
-    console.log('Reject document:', submissionId, documentType, catatan);
     try {
       await axios.post(`/api/pusdatin/review/submission/${submissionId}/${documentType}`, {
         status: 'rejected',
@@ -144,7 +141,6 @@ export default function PenerimaanTable({
 
   // Handler untuk membuka modal tabel utama
   const handleViewMainTable = (item: SlhdData) => {
-    console.log('View main table:', item.kabkota, 'submission_id:', item.id);
     setTabelUtamaModal({
       isOpen: true,
       submissionId: item.id,

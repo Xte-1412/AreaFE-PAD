@@ -2,16 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { isAxiosError } from 'axios';
-import axios from '@/lib/axios';
 import { parseApiErrorMessage } from '@/lib/zod-schemas';
 import SintaFullLogo from '@/components/SintaFullLogo.js';
 import AuthFormShell from '@/components/shared/auth/AuthFormShell';
 import PasswordField from '@/components/shared/auth/PasswordField';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -23,28 +22,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/login', { email, password });
-      
-      // Save token & user data
-      const token = response.data.user.token;
-      const user = response.data.user;
-      
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_data', JSON.stringify(user));
-      
-      // Redirect based on role
-      const roleName = user.role?.name?.toLowerCase();
-      console.log('🔐 Login successful, role:', roleName);
-      
-      if (roleName === 'admin') {
-        router.push('/admin-dashboard');
-      } else if (roleName === 'pusdatin') {
-        router.push('/pusdatin-dashboard');
-      } else if (roleName === 'provinsi' || roleName === 'kabupaten/kota') {
-        router.push('/dlh-dashboard');
-      } else {
-        router.push('/');
-      }
+      await login({ email, password });
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         const message = parseApiErrorMessage(err.response?.data, 'Login gagal. Silakan coba lagi.');

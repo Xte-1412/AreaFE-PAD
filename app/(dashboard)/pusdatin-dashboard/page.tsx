@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
 import axios from '@/lib/axios';
+import DashboardSkeleton from '@/components/shared/loading/DashboardSkeleton';
 
 interface DashboardData {
   summary: {
@@ -104,18 +105,7 @@ export default function PusdatinDashboardPage() {
 
   // Tampilkan UI Loading
   if (loading) {
-    return (
-      <div className="p-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-400 animate-pulse">
-            Selamat Datang, {userName.toUpperCase()}
-          </h1>
-        </header>
-        <div className="h-96 w-full bg-gray-200 rounded-xl animate-pulse flex items-center justify-center">
-          Memuat data dashboard...
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton variant="pusdatin" />;
   }
 
   const data = dashboardData;

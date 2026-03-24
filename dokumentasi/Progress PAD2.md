@@ -15,18 +15,20 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 
 - **07 Maret 2026** — Inisialisasi dokumen progress publik, Sprint 1 ditandai selesai, Sprint 2 ditetapkan sebagai sprint berikutnya.
 - **07 Maret 2026** — Dokumen dipindah ke folder `dokumentasi`.
+- **15 Maret 2026** — Sprint 2 ditandai selesai (100%), Sprint 3 ditetapkan sebagai sprint aktif berikutnya.
+- **15 Maret 2026** — Refactor Sprint 2: Admin Dashboard dimodularisasi ke reusable components + shared types terpusat.
 
 ---
 
 ## 📊 Status Umum
 
-- Sprint selesai: **1 dari 4**
-- Progress roadmap saat ini: **25%**
+- Sprint selesai: **2 dari 4**
+- Progress roadmap saat ini: **50%**
 - Status: **On Track** 🟢
 
 Visual progress roadmap:
 
-`[█████░░░░░░░░░░░░░] 25%`
+`[██████████░░░░░░░░░░] 50%`
 
 ---
 
@@ -53,17 +55,34 @@ Fokus Sprint 1: optimasi komponen dan fondasi reusability.
 
 ---
 
-## ⏭️ Sprint Selanjutnya — Sprint 2
+## ✅ Sprint 2 — Selesai
 
 Tema Sprint 2: **Stabilization & Bug/Context Cleanup**
 
-Target utama Sprint 2:
-- Menutup bug prioritas tinggi yang masih tersisa.
-- Merapikan source auth/context agar lebih konsisten.
-- Menstandarkan error handling pada flow penting.
-- Mengurangi technical debt yang berdampak langsung ke stabilitas harian.
+Hasil utama Sprint 2:
+- Bug blocker utama ditutup dan flow dashboard lebih stabil.
+- AuthContext disatukan (single source of truth).
+- Pattern native `alert/confirm/reload` di area prioritas dibersihkan.
+- Hardening pasca-sprint dilakukan: login hydration lebih stabil, polling logout DLH aman, loading dashboard konsisten skeleton.
+- Komponen Admin Dashboard dipecah ke `components/admin-dashboard/*` untuk reusability dan maintainability.
+- Tipe data dashboard dipusatkan ke `types/admin-dashboard.ts` untuk konsistensi antarkomponen.
 
-Visual readiness Sprint 2:
+Visual status Sprint 2:
+
+`Scope: ██████████ 100%`
+
+---
+
+## ⏭️ Sprint Selanjutnya — Sprint 3
+
+Tema Sprint 3: **Refactor Big Pages Into Modules**
+
+Target utama Sprint 3:
+- Modularisasi halaman besar (admin/dlh/pusdatin penilaian).
+- Pisahkan logic data fetching/filtering ke custom hooks.
+- Lanjut type hardening pada area prioritas.
+
+Visual readiness Sprint 3:
 
 `Ready to Start: ██████████ 100%`
 
@@ -74,8 +93,8 @@ Visual readiness Sprint 2:
 | Sprint | Fokus | Status |
 |---|---|---|
 | Sprint 1 | Component Optimization & Reusability Foundation | ✅ Selesai |
-| Sprint 2 | Stabilization & Bug/Context Cleanup | 🟡 Next |
-| Sprint 3 | Refactor Big Pages Into Modules | ⏳ Planned |
+| Sprint 2 | Stabilization & Bug/Context Cleanup | ✅ Selesai |
+| Sprint 3 | Refactor Big Pages Into Modules | 🟡 Next |
 | Sprint 4 | Hardening, QA, Documentation, Final Cleanup | ⏳ Planned |
 
 ---
