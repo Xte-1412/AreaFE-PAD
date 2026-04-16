@@ -78,27 +78,36 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 
 ---
 
-## Sprint 3 — Next 🟡
+## Sprint 3 — In Progress 🟡
 
 ### 1) Fokus Sprint
 - Refactor Big Pages Into Modules.
 
 ### 2) Hasil Utama
-- (akan diisi setelah sprint selesai)
+- Halaman `app/(dashboard)/pusdatin-dashboard/penilaian/page.tsx` diposisikan sebagai orchestrator.
+- `components/dashboard/pusdatin/penilaian/PenilaianTabs.tsx` dipecah menjadi modul per-tab (`tabs/*`) dengan barrel export.
+- Hook domain ditambahkan untuk memisahkan state dan shared data: `hooks/penilaian/usePenilaianTabState.ts` dan `hooks/penilaian/usePenilaianSharedData.ts`.
+- Alur lazy tab mounting, refresh submissions, dan progress cards tetap terjaga pasca-refactor.
+- Validasi teknis terbaru: `pnpm build` lulus setelah Iterasi 4.
 
 ### 3) Dampak ke User
-- (akan diisi setelah sprint selesai)
+- Navigasi tab penilaian tetap stabil dengan boundary logic yang lebih jelas.
+- Risiko regresi berkurang karena setiap tab kini punya modul terpisah.
+- Perubahan lanjutan di tiap tahap penilaian lebih cepat dan terarah.
 
 ### 4) Risiko yang Masih Ada
-- (akan diisi setelah sprint selesai)
+- Type hardening (`any`/typing error object) masih perlu dilanjutkan pada area prioritas lain.
+- Cakupan test otomatis granular per modul belum merata.
+- Beberapa halaman besar di luar area ini masih menunggu modularisasi bertahap.
 
 ### 5) Next Sprint
-- (akan diisi setelah sprint selesai)
+- Sprint 3 tetap dilanjutkan hingga target modularisasi dan type hardening prioritas tercapai.
+- Berikutnya lanjut ke Sprint 4: Hardening, QA, Documentation, Final Cleanup.
 
 ### 6) Status Sprint
-- Scope completion: _ongoing_
-- Quality status: _ongoing_
-- Stability: _ongoing_
+- Scope completion: **~70% (ongoing)**
+- Quality status: **Build Passed ✅**
+- Stability: **Good (ongoing) ✅**
 
 ---
 
@@ -106,3 +115,4 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - **07 Maret 2026** — Inisialisasi `Sprint-Report.md` sebagai single-file laporan sprint berkala, Sprint 1 diisi lengkap.
 - **15 Maret 2026** — Sprint 2 ditutup (100%), Sprint 3 diposisikan sebagai sprint aktif berikutnya.
 - **15 Maret 2026** — Pembaruan teknis Sprint 2: ekstraksi komponen reusable Admin Dashboard + konsolidasi shared types.
+- **16 April 2026** — Sprint 3 diperbarui menjadi in-progress: modularisasi tab penilaian (per-tab modules), ekstraksi hook domain penilaian, dan build validasi lulus.

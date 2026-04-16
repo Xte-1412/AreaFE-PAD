@@ -165,6 +165,13 @@ export interface WawancaraData {
     is_finalized: boolean;
 }
 
+export interface PenilaianRekap {
+    nilai_slhd: number | null;
+    nilai_penghargaan: number | null;
+    lolos_validasi1: boolean | null;
+    lolos_validasi2: boolean | null;
+}
+
 // Props untuk Tab Components
 export interface TabProps {
     provinsiList: Province[];

@@ -17,6 +17,7 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 - **07 Maret 2026** — Dokumen dipindah ke folder `dokumentasi`.
 - **15 Maret 2026** — Sprint 2 ditandai selesai (100%), Sprint 3 ditetapkan sebagai sprint aktif berikutnya.
 - **15 Maret 2026** — Refactor Sprint 2: Admin Dashboard dimodularisasi ke reusable components + shared types terpusat.
+- **16 April 2026** — Sprint 3 masuk fase implementasi aktif: modularisasi area penilaian dilanjutkan (per-tab modules + custom hooks), validasi build lulus.
 
 ---
 
@@ -25,6 +26,7 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 - Sprint selesai: **2 dari 4**
 - Progress roadmap saat ini: **50%**
 - Status: **On Track** 🟢
+- Sprint aktif: **Sprint 3 (In Progress ~70%)** 🟡
 
 Visual progress roadmap:
 
@@ -73,7 +75,7 @@ Visual status Sprint 2:
 
 ---
 
-## ⏭️ Sprint Selanjutnya — Sprint 3
+## 🟡 Sprint 3 — In Progress
 
 Tema Sprint 3: **Refactor Big Pages Into Modules**
 
@@ -82,9 +84,15 @@ Target utama Sprint 3:
 - Pisahkan logic data fetching/filtering ke custom hooks.
 - Lanjut type hardening pada area prioritas.
 
-Visual readiness Sprint 3:
+Progress sementara Sprint 3:
+- Area `pusdatin-dashboard/penilaian` telah dipindah ke pola page orchestrator.
+- `PenilaianTabs` sudah dipecah menjadi file per-tab (`tabs/*`) dengan barrel export.
+- Shared logic diekstrak ke `hooks/penilaian/usePenilaianTabState.ts` dan `hooks/penilaian/usePenilaianSharedData.ts`.
+- Validasi teknis terbaru: `pnpm build` berhasil tanpa error.
 
-`Ready to Start: ██████████ 100%`
+Visual progress Sprint 3:
+
+`Implementation: ███████░░░ ~70%`
 
 ---
 
@@ -94,7 +102,7 @@ Visual readiness Sprint 3:
 |---|---|---|
 | Sprint 1 | Component Optimization & Reusability Foundation | ✅ Selesai |
 | Sprint 2 | Stabilization & Bug/Context Cleanup | ✅ Selesai |
-| Sprint 3 | Refactor Big Pages Into Modules | 🟡 Next |
+| Sprint 3 | Refactor Big Pages Into Modules | 🟡 In Progress (~70%) |
 | Sprint 4 | Hardening, QA, Documentation, Final Cleanup | ⏳ Planned |
 
 ---
