@@ -51,3 +51,5 @@ Gunakan struktur ini agar dokumen konsisten, mudah dicari, dan gampang dipahami 
 - **07 Maret 2026** — Seluruh file template dipindahkan ke folder `dokumentasi/template` (typo tamplate → template diperbaiki).
 - **15 Maret 2026** — Dokumen publik `Sprint-Report.md` dan `Progress PAD2.md` diperbarui: Sprint 2 ditutup, Sprint 3 ditetapkan sebagai next.
 - **15 Maret 2026** — Dokumentasi sinkron dengan implementasi FE terbaru: reusable components Admin Dashboard + shared types `types/admin-dashboard.ts`.
+- **16 April 2026** — Dokumentasi publik disinkronkan dengan progres Sprint 3: modularisasi tab penilaian per modul dan ekstraksi custom hooks.
+- **17 April 2026** — Dokumentasi publik Sprint 3 ditutup menjadi selesai (100%) setelah pengetesan berjalan normal.
