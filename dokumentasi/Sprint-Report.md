@@ -78,7 +78,7 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 
 ---
 
-## Sprint 3 — In Progress 🟡
+## Sprint 3 — Selesai ✅
 
 ### 1) Fokus Sprint
 - Refactor Big Pages Into Modules.
@@ -88,7 +88,7 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - `components/dashboard/pusdatin/penilaian/PenilaianTabs.tsx` dipecah menjadi modul per-tab (`tabs/*`) dengan barrel export.
 - Hook domain ditambahkan untuk memisahkan state dan shared data: `hooks/penilaian/usePenilaianTabState.ts` dan `hooks/penilaian/usePenilaianSharedData.ts`.
 - Alur lazy tab mounting, refresh submissions, dan progress cards tetap terjaga pasca-refactor.
-- Validasi teknis terbaru: `pnpm build` lulus setelah Iterasi 4.
+- Validasi teknis final: `pnpm build` lulus, smoke check route-level lulus, smoke check akun role riil lulus, dan kontrak FE -> BE terverifikasi tetap.
 
 ### 3) Dampak ke User
 - Navigasi tab penilaian tetap stabil dengan boundary logic yang lebih jelas.
@@ -96,18 +96,18 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - Perubahan lanjutan di tiap tahap penilaian lebih cepat dan terarah.
 
 ### 4) Risiko yang Masih Ada
-- Type hardening (`any`/typing error object) masih perlu dilanjutkan pada area prioritas lain.
+- Type hardening (`any`/typing error object) masih perlu dilanjutkan pada area non-prioritas Sprint 3.
 - Cakupan test otomatis granular per modul belum merata.
 - Beberapa halaman besar di luar area ini masih menunggu modularisasi bertahap.
 
 ### 5) Next Sprint
-- Sprint 3 tetap dilanjutkan hingga target modularisasi dan type hardening prioritas tercapai.
-- Berikutnya lanjut ke Sprint 4: Hardening, QA, Documentation, Final Cleanup.
+- Berikutnya lanjut ke Sprint 4: closure tenggat admin + audit FE terarah.
+- Sprint 5 difokuskan untuk hardening, QA, dokumentasi, dan final cleanup.
 
 ### 6) Status Sprint
-- Scope completion: **~70% (ongoing)**
-- Quality status: **Build Passed ✅**
-- Stability: **Good (ongoing) ✅**
+- Scope completion: **100%**
+- Quality status: **Passed ✅**
+- Stability: **Good ✅**
 
 ---
 
@@ -116,3 +116,5 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - **15 Maret 2026** — Sprint 2 ditutup (100%), Sprint 3 diposisikan sebagai sprint aktif berikutnya.
 - **15 Maret 2026** — Pembaruan teknis Sprint 2: ekstraksi komponen reusable Admin Dashboard + konsolidasi shared types.
 - **16 April 2026** — Sprint 3 diperbarui menjadi in-progress: modularisasi tab penilaian (per-tab modules), ekstraksi hook domain penilaian, dan build validasi lulus.
+- **17 April 2026** — Re-baseline plan: Sprint 4 diisi prioritas tenggat admin + audit FE, plan hardening lama diposisikan di Sprint 5.
+- **17 April 2026** — Pengetesan Sprint 3 dikonfirmasi normal; status Sprint 3 ditutup menjadi selesai (100%).

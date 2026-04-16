@@ -18,19 +18,21 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 - **15 Maret 2026** — Sprint 2 ditandai selesai (100%), Sprint 3 ditetapkan sebagai sprint aktif berikutnya.
 - **15 Maret 2026** — Refactor Sprint 2: Admin Dashboard dimodularisasi ke reusable components + shared types terpusat.
 - **16 April 2026** — Sprint 3 masuk fase implementasi aktif: modularisasi area penilaian dilanjutkan (per-tab modules + custom hooks), validasi build lulus.
+- **17 April 2026** — Re-baseline roadmap: Sprint 4 diisi prioritas closure tenggat admin + audit FE, plan hardening lama digeser ke Sprint 5.
+- **17 April 2026** — Pengetesan Sprint 3 dikonfirmasi berjalan normal; Sprint 3 ditutup 100% dan roadmap publik disinkronkan.
 
 ---
 
 ## 📊 Status Umum
 
-- Sprint selesai: **2 dari 4**
-- Progress roadmap saat ini: **50%**
+- Sprint selesai: **3 dari 5**
+- Progress roadmap saat ini: **60%**
 - Status: **On Track** 🟢
-- Sprint aktif: **Sprint 3 (In Progress ~70%)** 🟡
+- Sprint aktif: **Sprint 4 (Planned)** ⏳
 
 Visual progress roadmap:
 
-`[██████████░░░░░░░░░░] 50%`
+`[████████████░░░░░░░░] 60%`
 
 ---
 
@@ -75,7 +77,7 @@ Visual status Sprint 2:
 
 ---
 
-## 🟡 Sprint 3 — In Progress
+## ✅ Sprint 3 — Selesai
 
 Tema Sprint 3: **Refactor Big Pages Into Modules**
 
@@ -84,15 +86,15 @@ Target utama Sprint 3:
 - Pisahkan logic data fetching/filtering ke custom hooks.
 - Lanjut type hardening pada area prioritas.
 
-Progress sementara Sprint 3:
+Hasil akhir Sprint 3:
 - Area `pusdatin-dashboard/penilaian` telah dipindah ke pola page orchestrator.
 - `PenilaianTabs` sudah dipecah menjadi file per-tab (`tabs/*`) dengan barrel export.
 - Shared logic diekstrak ke `hooks/penilaian/usePenilaianTabState.ts` dan `hooks/penilaian/usePenilaianSharedData.ts`.
-- Validasi teknis terbaru: `pnpm build` berhasil tanpa error.
+- Validasi teknis final: `pnpm build` berhasil tanpa error, smoke check role riil berjalan normal, dan verifikasi kontrak FE -> BE tetap kompatibel.
 
 Visual progress Sprint 3:
 
-`Implementation: ███████░░░ ~70%`
+`Implementation: ██████████ 100%`
 
 ---
 
@@ -102,8 +104,9 @@ Visual progress Sprint 3:
 |---|---|---|
 | Sprint 1 | Component Optimization & Reusability Foundation | ✅ Selesai |
 | Sprint 2 | Stabilization & Bug/Context Cleanup | ✅ Selesai |
-| Sprint 3 | Refactor Big Pages Into Modules | 🟡 In Progress (~70%) |
-| Sprint 4 | Hardening, QA, Documentation, Final Cleanup | ⏳ Planned |
+| Sprint 3 | Refactor Big Pages Into Modules | ✅ Selesai (100%) |
+| Sprint 4 | Deadline Admin Closure + FE Audit & Legacy Cleanup | ⏳ Planned |
+| Sprint 5 | Hardening, QA, Documentation, Final Cleanup | ⏳ Planned |
 
 ---
 
