@@ -21,6 +21,15 @@ Dokumen lain: [📑 Layout Docs](./dokumentasi/LayoutDocs.md)
 
 ---
 
+## 🔄 Update Sprint 4 (17 April 2026)
+
+- Status Sprint 4 FE: **Selesai (scope FE)**.
+- Fokus tercapai: closure fitur pengaturan tenggat admin + audit FE prioritas.
+- Legacy tab lama `components/penilaian/Tab*.tsx` sudah dipindahkan ke root `_archive/2026-04-sprint4/components/penilaian`.
+- Catatan administratif PM: evidence screenshot AC #1 sampai AC #5 tetap mengikuti input manual dokumen sprint.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Lapisan | Teknologi |

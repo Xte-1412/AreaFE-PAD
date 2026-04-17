@@ -7,13 +7,32 @@ import UserTable from '@/components/UserTable';
 import Pagination from '@/components/Pagination';
 import UniversalModal from '@/components/UniversalModal';
 import axios from '@/lib/axios';
+import { logClientError } from '@/lib/logger';
 import Link from 'next/link';
 import { FiSearch } from 'react-icons/fi';
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 
+interface DinasInfo {
+  nama_dinas?: string | null;
+}
+
+interface PendingUser {
+  id: number;
+  email: string;
+  dinas?: DinasInfo | null;
+  province_name?: string | null;
+  regency_name?: string | null;
+}
+
+interface PaginatedPendingUsersResponse {
+  data: PendingUser[];
+  total: number;
+  last_page: number;
+}
+
 interface CacheEntry {
-  data: any;
+  data: PaginatedPendingUsersResponse;
   timestamp: number;
 }
 
@@ -42,7 +61,7 @@ const logActivity = async (action: string, description: string) => {
       role: 'admin',
     });
   } catch (error) {
-    console.error('Gagal mencatat log:', error);
+    logClientError('UsersPendingPage logActivity', error);
   }
 };
 
@@ -54,8 +73,8 @@ export default function UsersPendingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Data per role
-  const [dlhProvData, setDlhProvData] = useState<any>(null);
-  const [dlhKabData, setDlhKabData] = useState<any>(null);
+  const [dlhProvData, setDlhProvData] = useState<PaginatedPendingUsersResponse | null>(null);
+  const [dlhKabData, setDlhKabData] = useState<PaginatedPendingUsersResponse | null>(null);
 
   // Stats
   const [stats, setStats] = useState({
@@ -82,7 +101,7 @@ export default function UsersPendingPage() {
     setLoading(prev => ({ ...prev, [cacheKey]: true }));
     try {
       const res = await axios.get(endpoint);
-      const data = res.data;
+      const data = res.data as PaginatedPendingUsersResponse;
       
       dataCache[cacheKey] = {
         data,
@@ -91,7 +110,7 @@ export default function UsersPendingPage() {
       
       return data;
     } catch (e) {
-      console.error(`Gagal fetch ${endpoint}:`, e);
+      logClientError(`UsersPendingPage fetch ${endpoint}`, e);
       return null;
     } finally {
       setLoading(prev => ({ ...prev, [cacheKey]: false }));
@@ -150,8 +169,8 @@ export default function UsersPendingPage() {
     if (!searchTerm) return currentUsers;
     
     const lowerTerm = searchTerm.toLowerCase();
-    return currentUsers.filter((user: any) => 
-      user.email?.toLowerCase().includes(lowerTerm) ||
+    return currentUsers.filter((user: PendingUser) => 
+      user.email.toLowerCase().includes(lowerTerm) ||
       user.dinas?.nama_dinas?.toLowerCase().includes(lowerTerm)
     );
   }, [currentUsers, searchTerm]);
@@ -210,7 +229,7 @@ export default function UsersPendingPage() {
 
   // Handle approve
   const handleApproveClick = (id: number) => {
-    const targetUser = currentUsers.find((u: any) => u.id === id);
+    const targetUser = currentUsers.find((u: PendingUser) => u.id === id);
     setModalConfig({
       title: 'Konfirmasi Approve',
       message: `Apakah Anda yakin ingin menyetujui akun ${targetUser?.email || 'ini'}?`,
@@ -224,7 +243,7 @@ export default function UsersPendingPage() {
 
   // Handle reject
   const handleRejectClick = (id: number) => {
-    const targetUser = currentUsers.find((u: any) => u.id === id);
+    const targetUser = currentUsers.find((u: PendingUser) => u.id === id);
     setModalConfig({
       title: 'Konfirmasi Reject',
       message: `Apakah Anda yakin ingin menolak akun ${targetUser?.email || 'ini'}? Akun akan dihapus.`,
@@ -246,7 +265,7 @@ export default function UsersPendingPage() {
     setIsSubmitting(true);
     setIsModalOpen(false);
 
-    const targetUser = currentUsers.find((u: any) => u.id === id);
+    const targetUser = currentUsers.find((u: PendingUser) => u.id === id);
 
     try {
       if (action === 'approve') {
@@ -304,7 +323,7 @@ export default function UsersPendingPage() {
       setIsModalOpen(true);
 
     } catch (error) {
-      console.error(`Gagal ${action} pengguna:`, error);
+      logClientError(`UsersPendingPage ${action} user`, error);
       
       setModalConfig({
         title: `Gagal ${action}`,
@@ -397,7 +416,7 @@ export default function UsersPendingPage() {
       {!isLoading && (
         <>
           <UserTable
-            users={filteredUsers.map((u: any) => ({
+            users={filteredUsers.map((u: PendingUser) => ({
               id: u.id,
               name: u.email,
               email: u.email,

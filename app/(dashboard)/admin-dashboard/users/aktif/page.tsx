@@ -1,20 +1,40 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { User } from '@/context/AuthContext';
 import InnerNav from '@/components/InnerNav';
 import UserTable from '@/components/UserTable';
 import Pagination from '@/components/Pagination';
 import Link from 'next/link';
 import axios from '@/lib/axios';
+import { logClientError } from '@/lib/logger';
 import { FiSearch } from 'react-icons/fi'; 
 
 const USERS_PER_PAGE = 25;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 menit
 
 // Cache structure
+interface DinasInfo {
+  nama_dinas?: string | null;
+}
+
+interface AdminUser {
+  id: number;
+  name?: string | null;
+  email: string;
+  role?: string | null;
+  dinas?: DinasInfo | null;
+  province_name?: string | null;
+  regency_name?: string | null;
+}
+
+interface PaginatedUsersResponse {
+  data: AdminUser[];
+  total: number;
+  last_page: number;
+}
+
 interface CacheEntry {
-  data: any;
+  data: PaginatedUsersResponse;
   timestamp: number;
 }
 
@@ -69,9 +89,9 @@ export default function UsersAktifPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Data per role
-  const [dlhProvData, setDlhProvData] = useState<any>(null);
-  const [dlhKabData, setDlhKabData] = useState<any>(null);
-  const [pusdatinData, setPusdatinData] = useState<any>(null);
+  const [dlhProvData, setDlhProvData] = useState<PaginatedUsersResponse | null>(null);
+  const [dlhKabData, setDlhKabData] = useState<PaginatedUsersResponse | null>(null);
+  const [pusdatinData, setPusdatinData] = useState<PaginatedUsersResponse | null>(null);
 
   // Stats
   const [stats, setStats] = useState({
@@ -98,7 +118,7 @@ export default function UsersAktifPage() {
     setLoading(prev => ({ ...prev, [cacheKey]: true }));
     try {
       const res = await axios.get(endpoint);
-      const data = res.data;
+      const data = res.data as PaginatedUsersResponse;
       
       // Store in cache
       dataCache[cacheKey] = {
@@ -108,7 +128,7 @@ export default function UsersAktifPage() {
       
       return data;
     } catch (e) {
-      console.error(`Gagal fetch ${endpoint}:`, e);
+      logClientError(`UsersAktifPage fetch ${endpoint}`, e);
       return null;
     } finally {
       setLoading(prev => ({ ...prev, [cacheKey]: false }));
@@ -185,9 +205,9 @@ export default function UsersAktifPage() {
     if (!searchTerm) return currentUsers;
     
     const lowerTerm = searchTerm.toLowerCase();
-    return currentUsers.filter((user: any) => 
+    return currentUsers.filter((user: AdminUser) => 
       user.name?.toLowerCase().includes(lowerTerm) || 
-      user.email?.toLowerCase().includes(lowerTerm) ||
+      user.email.toLowerCase().includes(lowerTerm) ||
       user.dinas?.nama_dinas?.toLowerCase().includes(lowerTerm)
     );
   }, [currentUsers, searchTerm]);
@@ -348,7 +368,7 @@ export default function UsersAktifPage() {
       {!isLoading && (
         <>
           <UserTable
-            users={filteredUsers.map((u: any) => ({
+            users={filteredUsers.map((u: AdminUser) => ({
               id: u.id,
               name: u.name || u.email,
               email: u.email,
