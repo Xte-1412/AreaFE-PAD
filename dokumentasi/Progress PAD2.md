@@ -20,19 +20,20 @@ Dokumen ini adalah ringkasan progress frontend SIPELITA yang diperbarui setiap s
 - **16 April 2026** — Sprint 3 masuk fase implementasi aktif: modularisasi area penilaian dilanjutkan (per-tab modules + custom hooks), validasi build lulus.
 - **17 April 2026** — Re-baseline roadmap: Sprint 4 diisi prioritas closure tenggat admin + audit FE, plan hardening lama digeser ke Sprint 5.
 - **17 April 2026** — Pengetesan Sprint 3 dikonfirmasi berjalan normal; Sprint 3 ditutup 100% dan roadmap publik disinkronkan.
+- **17 April 2026** — Rekap Sprint 4 FE diselesaikan: closure deadline admin, audit FE prioritas selesai, dan legacy tab lama dipindahkan ke root `_archive/2026-04-sprint4`.
 
 ---
 
 ## 📊 Status Umum
 
-- Sprint selesai: **3 dari 5**
-- Progress roadmap saat ini: **60%**
+- Sprint selesai: **4 dari 5**
+- Progress roadmap saat ini: **80%**
 - Status: **On Track** 🟢
-- Sprint aktif: **Sprint 4 (Planned)** ⏳
+- Sprint aktif: **Sprint 5 (Planned)** ⏳
 
 Visual progress roadmap:
 
-`[████████████░░░░░░░░] 60%`
+`[████████████████░░░░] 80%`
 
 ---
 
@@ -98,6 +99,21 @@ Visual progress Sprint 3:
 
 ---
 
+## ✅ Sprint 4 — Selesai (FE Scope)
+
+Tema Sprint 4: **Deadline Admin Closure + FE Audit & Legacy Cleanup**
+
+Hasil akhir Sprint 4:
+- Halaman pengaturan deadline admin sudah menutup kebutuhan AC utama pada sisi FE.
+- Sinkronisasi flow deadline admin selesai termasuk pembaruan daftar tenggat pasca simpan.
+- Audit FE prioritas pada domain admin selesai (type hardening + logging guard pada file terdampak).
+- Legacy tab lama `components/penilaian/Tab*.tsx` dipindahkan ke root `_archive/2026-04-sprint4/components/penilaian`.
+
+Catatan:
+- Bukti screenshot AC #1 sampai AC #5 tetap mengikuti proses input manual untuk closure PM final.
+
+---
+
 ## 🗺️ Roadmap Ringkas
 
 | Sprint | Fokus | Status |
@@ -105,7 +121,7 @@ Visual progress Sprint 3:
 | Sprint 1 | Component Optimization & Reusability Foundation | ✅ Selesai |
 | Sprint 2 | Stabilization & Bug/Context Cleanup | ✅ Selesai |
 | Sprint 3 | Refactor Big Pages Into Modules | ✅ Selesai (100%) |
-| Sprint 4 | Deadline Admin Closure + FE Audit & Legacy Cleanup | ⏳ Planned |
+| Sprint 4 | Deadline Admin Closure + FE Audit & Legacy Cleanup | ✅ Selesai (FE Scope) |
 | Sprint 5 | Hardening, QA, Documentation, Final Cleanup | ⏳ Planned |
 
 ---

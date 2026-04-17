@@ -111,6 +111,36 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 
 ---
 
+## Sprint 4 — Selesai ✅ (FE Scope)
+
+### 1) Fokus Sprint
+- Deadline Admin Closure + FE Audit & Legacy Cleanup.
+
+### 2) Hasil Utama
+- Closure fitur tenggat admin di FE selesai (form, validasi, tabel daftar tenggat, refresh data pasca simpan).
+- Perbaikan konsistensi flow admin pada area deadline dan unfinalize selesai.
+- Audit FE prioritas selesai (type hardening + logging guard pada file admin prioritas).
+- Legacy tab lama `components/penilaian/Tab*.tsx` dipindahkan ke root `_archive/2026-04-sprint4/components/penilaian`.
+
+### 3) Dampak ke User
+- Admin dapat mengelola tenggat dengan alur yang lebih stabil dan informatif.
+- Risiko gagal sinkron daftar tenggat setelah simpan menurun.
+- Feedback error pada aksi admin lebih jelas saat terjadi kegagalan API.
+
+### 4) Risiko yang Masih Ada
+- Closure administratif PM masih menunggu input manual screenshot AC #1 sampai AC #5.
+- Kontrol fase penuh oleh admin tetap membutuhkan dukungan endpoint BE tambahan.
+
+### 5) Next Sprint
+- Sprint 5: hardening umum, QA, dokumentasi final, dan cleanup lanjutan.
+
+### 6) Status Sprint
+- Scope completion: **100% (FE Scope)**
+- Quality status: **Passed ✅**
+- Stability: **Good ✅**
+
+---
+
 ## Log Update
 - **07 Maret 2026** — Inisialisasi `Sprint-Report.md` sebagai single-file laporan sprint berkala, Sprint 1 diisi lengkap.
 - **15 Maret 2026** — Sprint 2 ditutup (100%), Sprint 3 diposisikan sebagai sprint aktif berikutnya.
@@ -118,3 +148,4 @@ Dokumen ini adalah **satu file laporan sprint** yang akan diperbarui berkala set
 - **16 April 2026** — Sprint 3 diperbarui menjadi in-progress: modularisasi tab penilaian (per-tab modules), ekstraksi hook domain penilaian, dan build validasi lulus.
 - **17 April 2026** — Re-baseline plan: Sprint 4 diisi prioritas tenggat admin + audit FE, plan hardening lama diposisikan di Sprint 5.
 - **17 April 2026** — Pengetesan Sprint 3 dikonfirmasi normal; status Sprint 3 ditutup menjadi selesai (100%).
+- **17 April 2026** — Rekap Sprint 4 FE selesai: closure domain deadline admin, audit FE prioritas selesai, dan archive legacy dipindahkan ke root `_archive`.

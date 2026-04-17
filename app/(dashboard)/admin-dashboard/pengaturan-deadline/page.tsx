@@ -3,17 +3,39 @@
 import { useState, useEffect, useCallback } from 'react';
 import UniversalModal from '@/components/UniversalModal';
 import axios from '@/lib/axios';
+import { logClientError } from '@/lib/logger';
 import { Calendar, Clock, Save, AlertCircle, RefreshCw } from 'lucide-react';
 
 interface DeadlineData {
-  year: string;
+  year: number;
   deadline: string | null;
   catatan: string;
-  is_passed: boolean;
+  is_passed: boolean | null;
 }
+
+const toLocalDateTimeInput = (dateString: string): { date: string; time: string } | null => {
+  const parsedDate = new Date(dateString);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  const year = String(parsedDate.getFullYear());
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+  const day = String(parsedDate.getDate()).padStart(2, '0');
+  const hour = String(parsedDate.getHours()).padStart(2, '0');
+  const minute = String(parsedDate.getMinutes()).padStart(2, '0');
+
+  return {
+    date: `${year}-${month}-${day}`,
+    time: `${hour}:${minute}`,
+  };
+};
 
 export default function PengaturanDeadlinePage() {
   const currentYear = new Date().getFullYear();
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [deadline, setDeadline] = useState<DeadlineData | null>(null);
   const [deadlineRows, setDeadlineRows] = useState<DeadlineData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +82,7 @@ export default function PengaturanDeadlinePage() {
       }
       setTableError(null);
 
-      const response = await axios.get(`/api/admin/deadline/date/${currentYear}`);
+      const response = await axios.get(`/api/admin/deadline/date/${selectedYear}`);
       const data: DeadlineData = response.data;
       
       setDeadline(data);
@@ -68,14 +90,20 @@ export default function PengaturanDeadlinePage() {
       
       // Parse deadline untuk form
       if (data.deadline) {
-        const dt = new Date(data.deadline);
-        setSelectedDate(dt.toISOString().split('T')[0]);
-        setSelectedTime(dt.toTimeString().slice(0, 5));
+        const localDateTime = toLocalDateTimeInput(data.deadline);
+
+        if (localDateTime) {
+          setSelectedDate(localDateTime.date);
+          setSelectedTime(localDateTime.time);
+        }
+      } else {
+        setSelectedDate('');
+        setSelectedTime('23:59');
       }
       
       setCatatan(data.catatan || '');
     } catch (error) {
-      console.error('Gagal memuat deadline:', error);
+      logClientError('PengaturanDeadlinePage fetchDeadline', error);
       setTableError('Gagal memuat daftar tenggat. Silakan coba lagi.');
     } finally {
       if (showFullLoader) {
@@ -83,7 +111,7 @@ export default function PengaturanDeadlinePage() {
       }
       setTableRefreshing(false);
     }
-  }, [currentYear]);
+  }, [selectedYear]);
 
   // Fetch deadline saat ini
   useEffect(() => {
@@ -104,12 +132,22 @@ export default function PengaturanDeadlinePage() {
     try {
       setSaving(true);
       
-      // Gabungkan date dan time
-      const deadlineDateTime = `${selectedDate}T${selectedTime}:00`;
+      // Interpret input berdasarkan timezone perangkat user, lalu kirim sebagai UTC instant.
+      const deadlineDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
+
+      if (Number.isNaN(deadlineDateTime.getTime())) {
+        setModalConfig({
+          title: 'Validasi Gagal',
+          message: 'Format tanggal/jam deadline tidak valid.',
+          variant: 'warning',
+        });
+        setModalOpen(true);
+        return;
+      }
       
       const payload = {
-        year: currentYear,
-        deadline_at: deadlineDateTime,
+        year: selectedYear,
+        deadline_at: deadlineDateTime.toISOString(),
         catatan: catatan || 'Deadline penerimaan data submission',
       };
 
@@ -128,7 +166,7 @@ export default function PengaturanDeadlinePage() {
       await fetchDeadline();
       
     } catch (error: unknown) {
-      console.error('Gagal menyimpan deadline:', error);
+      logClientError('PengaturanDeadlinePage handleSave', error);
       setModalConfig({
         title: 'Gagal',
         message: getErrorMessage(error, 'Gagal menyimpan deadline. Silakan coba lagi.'),
@@ -150,7 +188,7 @@ export default function PengaturanDeadlinePage() {
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      timeZone: 'Asia/Jakarta'
+      timeZoneName: 'short'
     });
   };
 
@@ -195,8 +233,32 @@ export default function PengaturanDeadlinePage() {
           Pengaturan Deadline Submission
         </h1>
         <p className="text-gray-600">
-          Atur deadline penerimaan data dokumen dari DLH Provinsi dan Kab/Kota untuk tahun {currentYear}
+          Atur deadline penerimaan data dokumen dari DLH Provinsi dan Kab/Kota untuk tahun {selectedYear}
         </p>
+      </div>
+
+      {/* Year Selector */}
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tahun Kelola Deadline
+        </label>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="w-full sm:w-64 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            disabled={saving || tableRefreshing}
+          >
+            {[currentYear - 1, currentYear, currentYear + 1, currentYear + 2, currentYear + 3].map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <p className="text-sm text-gray-500">
+            Ganti tahun untuk mengatur tenggat periode berikutnya tanpa mengubah tahun berjalan.
+          </p>
+        </div>
       </div>
 
       {/* Current Deadline Info */}
@@ -218,7 +280,7 @@ export default function PengaturanDeadlinePage() {
               <h3 className={`text-lg font-semibold mb-1 ${
                 deadline.is_passed ? 'text-red-900' : 'text-blue-900'
               }`}>
-                Deadline Saat Ini
+                Deadline Saat Ini (Tahun {selectedYear})
               </h3>
               <p className={`text-2xl font-bold mb-2 ${
                 deadline.is_passed ? 'text-red-700' : 'text-blue-700'
@@ -283,7 +345,7 @@ export default function PengaturanDeadlinePage() {
                 {deadlineRows.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-8 text-center text-sm text-gray-500">
-                      Belum ada tenggat tersimpan untuk tahun {currentYear}.
+                      Belum ada tenggat tersimpan untuk tahun {selectedYear}.
                     </td>
                   </tr>
                 ) : (
@@ -346,7 +408,7 @@ export default function PengaturanDeadlinePage() {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               disabled={saving}
             />
-            <p className="text-xs text-gray-500 mt-1">Waktu dalam WIB (Asia/Jakarta)</p>
+            <p className="text-xs text-gray-500 mt-1">Waktu mengikuti zona perangkat ({localTimeZone})</p>
           </div>
 
           {/* Catatan */}
@@ -372,6 +434,7 @@ export default function PengaturanDeadlinePage() {
               <ul className="list-disc list-inside space-y-1 text-amber-700">
                 <li>Pastikan tanggal dan waktu yang dipilih sudah benar</li>
                 <li>Setelah deadline lewat, DLH tidak dapat mengirim data</li>
+                <li>Gunakan Tahun Kelola Deadline untuk menyiapkan periode selanjutnya</li>
                 <li>Perubahan deadline akan langsung berlaku</li>
               </ul>
             </div>

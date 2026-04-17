@@ -16,14 +16,32 @@ export default function TimelineDetailModal({
 }) {
   const [isUnfinalizing, setIsUnfinalizing] = useState(false);
   const [pendingConfirm, setPendingConfirm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const getErrorMessage = (error: unknown) => {
+    if (typeof error === 'object' && error !== null && 'response' in error) {
+      const response = (error as { response?: { data?: { message?: string } } }).response;
+      if (response?.data?.message) {
+        return response.data.message;
+      }
+    }
+
+    if (error instanceof Error && error.message) {
+      return error.message;
+    }
+
+    return 'Gagal membuka kembali tahap. Silakan coba lagi.';
+  };
 
   const handleUnfinalize = async () => {
     setPendingConfirm(false);
     setIsUnfinalizing(true);
+    setErrorMessage(null);
     try {
       await onUnfinalize(item.tahap);
       onClose();
     } catch (error) {
+      setErrorMessage(getErrorMessage(error));
       console.error('Gagal unfinalize:', error);
     } finally {
       setIsUnfinalizing(false);
@@ -185,7 +203,10 @@ export default function TimelineDetailModal({
                     </p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => setPendingConfirm(false)}
+                        onClick={() => {
+                          setPendingConfirm(false);
+                          setErrorMessage(null);
+                        }}
                         className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
                       >
                         Batal
@@ -202,7 +223,10 @@ export default function TimelineDetailModal({
                 ) : (
                   <>
                     <button
-                      onClick={() => setPendingConfirm(true)}
+                      onClick={() => {
+                        setPendingConfirm(true);
+                        setErrorMessage(null);
+                      }}
                       disabled={isUnfinalizing}
                       className="w-full px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
@@ -222,6 +246,10 @@ export default function TimelineDetailModal({
                       Ini akan mengembalikan tahap ke status aktif dan membuka akses edit
                     </p>
                   </>
+                )}
+
+                {errorMessage && (
+                  <p className="mt-3 text-sm text-red-600 text-center">{errorMessage}</p>
                 )}
               </div>
             )}

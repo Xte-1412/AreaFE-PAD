@@ -71,8 +71,8 @@ export default function AdminDashboardPage() {
     const tahapEndpointMap: Record<string, string> = {
       penilaian_slhd: 'slhd',
       penilaian_penghargaan: 'penghargaan',
-      validasi_1: 'validasi1',
-      validasi_2: 'validasi2',
+      validasi_1: 'validasi-1',
+      validasi_2: 'validasi-2',
       wawancara: 'wawancara',
     };
     
