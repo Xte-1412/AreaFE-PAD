@@ -14,6 +14,7 @@ const axios = Axios.create({
   baseURL: getBaseURL(),
   timeout: 30000, // Railway biasanya cepat, 30 detik sudah cukup
   headers: {
+    'ngrok-skip-browser-warning': '69420',
     'X-Requested-With': 'XMLHttpRequest',
     'Accept': 'application/json',
     'Content-Type': 'application/json',
