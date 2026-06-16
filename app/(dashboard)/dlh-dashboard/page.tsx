@@ -101,14 +101,18 @@ export default function DLHDashboardPage() {
                 setLoading(false);
                 return;
             }
-            
+            let controller: AbortController | null = new AbortController();
             try {
                 setLoading(true);
-                const response = await axios.get('/api/dinas/dashboard');
+                const response = await axios.get('/api/dinas/dashboard', { signal: controller.signal });
                 setData(response.data);
                 setLastUpdated(new Date());
                 setError(null);
             } catch (err: unknown) {
+                if ((err as any)?.name === 'CanceledError' || (err as any)?.name === 'AbortError') {
+                    // ignore abort
+                    return;
+                }
                 if (isAxiosError(err) && err.response?.status === 401) {
                     setError('Sesi login Anda berakhir. Silakan login ulang.');
                     return;
@@ -117,15 +121,15 @@ export default function DLHDashboardPage() {
                 setError(errorMessage);
             } finally {
                 setLoading(false);
+                controller = null;
             }
         };
-
         if (authReady) {
             fetchDashboard();
         }
     }, [authReady, resolvedRole]);
 
-    // Auto-refresh setiap 30 detik
+    // Auto-refresh with visibility, backoff and cancellation
     useEffect(() => {
         stopAutoRefresh();
 
@@ -133,26 +137,72 @@ export default function DLHDashboardPage() {
             return;
         }
 
-        intervalRef.current = setInterval(async () => {
-            const token = localStorage.getItem('auth_token');
-            if (!token) {
-                stopAutoRefresh();
+        let cancelled = false;
+        let backoff = 30000; // 30s initial
+        const MAX_BACKOFF = 300000; // 5 minutes
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        let controller: AbortController | null = null;
+
+        const doPoll = async () => {
+            if (cancelled) return;
+
+            // don't poll when tab is hidden
+            if (typeof document !== 'undefined' && document.hidden) {
+                // schedule a check to resume when visible
+                timeoutId = setTimeout(doPoll, 5000);
                 return;
             }
 
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                return;
+            }
+
+            controller = new AbortController();
             try {
-                const response = await axios.get('/api/dinas/dashboard');
+                const response = await axios.get('/api/dinas/dashboard', { signal: controller.signal });
                 setData(response.data);
                 setLastUpdated(new Date());
+                backoff = 30000; // reset backoff on success
             } catch (err: unknown) {
-                if (isAxiosError(err) && err.response?.status === 401) {
-                    stopAutoRefresh();
+                if ((err as any)?.name === 'CanceledError' || (err as any)?.name === 'AbortError') {
+                    // request was aborted, do nothing
+                } else if (isAxiosError(err) && err.response?.status === 401) {
+                    // stop polling on unauthorized
                     return;
+                } else {
+                    // increase backoff on other errors
+                    backoff = Math.min(MAX_BACKOFF, backoff * 2);
+                }
+            } finally {
+                // schedule next poll
+                if (!cancelled) {
+                    timeoutId = setTimeout(doPoll, backoff);
                 }
             }
-        }, 30000); // 30 detik
+        };
 
-        return () => stopAutoRefresh();
+        // Visibility change handler to immediately poll on visibility restore
+        const onVisibility = () => {
+            if (!document.hidden) {
+                // run an immediate poll
+                if (timeoutId) clearTimeout(timeoutId as any);
+                doPoll();
+            }
+        };
+
+        document.addEventListener('visibilitychange', onVisibility);
+
+        // start polling
+        doPoll();
+
+        // cleanup
+        return () => {
+            cancelled = true;
+            document.removeEventListener('visibilitychange', onVisibility);
+            if (timeoutId) clearTimeout(timeoutId as any);
+            if (controller) controller.abort();
+        };
     }, [resolvedRole]);
 
     useEffect(() => {
