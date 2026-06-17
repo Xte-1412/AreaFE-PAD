@@ -127,7 +127,7 @@ export default function Header() {
 
   // RENDER NAVBAR LENGKAP - User sudah login
   return (
-    <div className="w-full sticky top-0 ">
+    <div className="w-full sticky top-0 z-50">
       
       <header className="bg-white border-b border-gray-200 px-4 py-2.5 w-full">
         <div className="flex justify-between items-center mx-auto max-w-screen-xl">
