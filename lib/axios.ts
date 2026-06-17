@@ -7,8 +7,9 @@ import Axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 const getBaseURL = (): string => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    // Jika diakses menggunakan IP (publik/privat) atau domain kustom selain localhost, gunakan hostname tersebut di port 8000
-    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+    // HANYA gunakan resolver dinamis jika diakses menggunakan alamat IP (mengandung angka dan titik)
+    const isIP = /^[0-9.]+$/.test(hostname);
+    if (isIP) {
       return `http://${hostname}:8000`;
     }
   }
