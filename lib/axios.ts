@@ -5,6 +5,13 @@ import Axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
  * Membersihkan trailing slash agar tidak terjadi double slash di endpoint.
  */
 const getBaseURL = (): string => {
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // Jika diakses menggunakan IP (publik/privat) atau domain kustom selain localhost, gunakan hostname tersebut di port 8000
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return `http://${hostname}:8000`;
+    }
+  }
   const envBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').trim();
   // Hapus slash di akhir dan pastikan tidak duplikat dengan prefix /api
   return envBase.replace(/\/+$/, '').replace(/\/api$/, '');
