@@ -85,6 +85,23 @@ Gunakan akun uji dari backend untuk masing-masing role:
 
 ---
 
+## 🐳 Dockerization
+
+Untuk deployment terdistribusi di VPS UGM, frontend ini telah di-dockerize menggunakan:
+*   **`Dockerfile`**: Menggunakan multi-stage build (`node:20-alpine`) dengan output Next.js standalone server guna meminimalkan ukuran image dan meningkatkan performa.
+*   **`next.config.ts`**: Mengaktifkan konfigurasi `output: 'standalone'` untuk runtime Docker.
+
+---
+
+## ⚡ Resolving Base URL API Secara Dinamis
+
+Untuk mendukung akses terdistribusi dari VPS UGM (via IP privat/lokal `10.33.35.48`), frontend memiliki mekanisme deteksi di `lib/axios.ts`:
+*   Jika aplikasi diakses menggunakan alamat IP numerik (misal: `http://10.33.35.48:3000`), base URL Axios akan secara otomatis diarahkan ke `http://<IP_TERSEBUT>:8000`.
+*   Jika diakses via nama domain (seperti Vercel), maka akan menggunakan fallback environment variable `NEXT_PUBLIC_API_URL`.
+*   Mencegah issue *Mixed Content* (HTTPS Vercel memblokir request HTTP ke VPS IP).
+
+---
+
 ## 💻 Cara Install & Menjalankan
 
 ### 1. Masuk ke folder frontend
@@ -166,37 +183,20 @@ AreaFE-PAD/
 
 ---
 
-## 🐳 Dockerization (UAS PSAIT)
-
-Untuk memenuhi kriteria penilaian UAS PSAIT, repositori frontend ini telah dilengkapi dengan konfigurasi Docker:
-*   **`Dockerfile`**: Menggunakan *multi-stage build* berbasis `node:20-alpine` untuk menghasilkan output *standalone server* (menghemat ukuran image dari ~1 GB menjadi ~150 MB).
-*   **`lib/axios.ts` (Dynamic IP Resolution)**: Base URL Axios mendeteksi alamat IP pengakses secara dinamis (`window.location.hostname`). Mendukung akses dari IP Publik UGM (`202.43.94.30`) maupun IP Privat UGM (`10.33.35.48`) secara bersamaan tanpa perlu mengubah file konfigurasi manual.
-
-### Cara Menjalankan Secara Mandiri (Docker):
-
-1.  **Build Docker Image:**
-    ```bash
-    docker build -t areapad-frontend .
-    ```
-2.  **Jalankan Container:**
-    ```bash
-    docker run -p 3000:3000 areapad-frontend
-    ```
-
----
-
 ## 👥 Contributor
 
 <table>
 	<tr>
 		<td align="center" width="25%">
-			<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="72" alt="GitHub Placeholder" />
+			<a href="https://github.com/safiradrmd">
+				<img src="https://github.com/safiradrmd.png?size=96" width="96" alt="PM" />
+			</a>
 			<br />
 			<b>PM</b>
 			<br />
 			Safira Dwita Ramadhani
 			<br />
-			<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="14" alt="GitHub" /> GitHub belum diisi
+			<a href="https://github.com/safiradrmd">@safiradrmd</a>
 		</td>
 		<td align="center" width="25%">
 			<a href="https://github.com/titoalla17">
