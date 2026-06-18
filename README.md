@@ -166,6 +166,25 @@ AreaFE-PAD/
 
 ---
 
+## 🐳 Dockerization (UAS PSAIT)
+
+Untuk memenuhi kriteria penilaian UAS PSAIT, repositori frontend ini telah dilengkapi dengan konfigurasi Docker:
+*   **`Dockerfile`**: Menggunakan *multi-stage build* berbasis `node:20-alpine` untuk menghasilkan output *standalone server* (menghemat ukuran image dari ~1 GB menjadi ~150 MB).
+*   **`lib/axios.ts` (Dynamic IP Resolution)**: Base URL Axios mendeteksi alamat IP pengakses secara dinamis (`window.location.hostname`). Mendukung akses dari IP Publik UGM (`202.43.94.30`) maupun IP Privat UGM (`10.33.35.48`) secara bersamaan tanpa perlu mengubah file konfigurasi manual.
+
+### Cara Menjalankan Secara Mandiri (Docker):
+
+1.  **Build Docker Image:**
+    ```bash
+    docker build -t areapad-frontend .
+    ```
+2.  **Jalankan Container:**
+    ```bash
+    docker run -p 3000:3000 areapad-frontend
+    ```
+
+---
+
 ## 👥 Contributor
 
 <table>
